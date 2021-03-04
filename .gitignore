@@ -25,3 +25,5 @@ space_traders-*.tar
 
 # Temporary files for e.g. tests
 /tmp
+
+dev.config.exs
