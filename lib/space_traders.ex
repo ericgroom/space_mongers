@@ -16,8 +16,17 @@ defmodule SpaceTraders do
     get("/users/" <> @username) |> unwrap()
   end
 
+  def loans do
+    get("/game/loans") |> unwrap()
+  end
+
+  def take_loan(type) do
+    post("/users/" <> @username <> "/loans", %{type: type}) |> unwrap()
+  end
+
   defp unwrap(response) do
     {:ok, env} = response
+    IO.inspect response
     env.body
   end
 end
