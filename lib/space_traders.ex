@@ -18,6 +18,10 @@ defmodule SpaceTraders do
     get("/users/" <> @username) |> unwrap()
   end
 
+  def my_ships do
+    get("/users/" <> @username <> "/ships") |> unwrap()
+  end
+
   def loans do
     get("/game/loans") |> unwrap()
   end
@@ -26,7 +30,6 @@ defmodule SpaceTraders do
     post("/users/" <> @username <> "/loans", %{type: type}) |> unwrap()
   end
 
-  @spec ships(String.t() | nil) :: any
   def ships(class \\ nil) do
     get("/game/ships", query: [class: class]) |> unwrap()
   end
@@ -41,6 +44,14 @@ defmodule SpaceTraders do
       good: "FUEL",
       quantity: quantity
     }) |> unwrap()
+  end
+
+  def systems do
+    get("/game/systems") |> unwrap()
+  end
+
+  def location_info(symbol) do
+    get("/game/locations/" <> symbol) |> unwrap()
   end
 
   def locations(location_type \\ nil, system \\ @default_system) do
