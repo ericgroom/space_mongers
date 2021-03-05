@@ -43,8 +43,8 @@ defmodule SpaceTraders do
     }) |> unwrap()
   end
 
-  def find_asteroid(system \\ @default_system) do
-    get("/game/systems/" <> system <> "/locations", [query: [type: "ASTEROID"]]) |> unwrap()
+  def locations(location_type \\ nil, system \\ @default_system) do
+    get("/game/systems/" <> system <> "/locations", [query: [type: location_type]]) |> unwrap()
   end
 
   def create_flight_plan(ship_id, destination) do
@@ -53,6 +53,10 @@ defmodule SpaceTraders do
 
   def view_flight_plan(flight_plan_id) do
     get("/users/" <> @username <> "/flight-plans/" <> flight_plan_id) |> unwrap()
+  end
+
+  def available_trades(location) do
+    get("/game/locations/" <> location <> "/marketplace") |> unwrap()
   end
 
   def buy_metals(ship_id, quantity) do
