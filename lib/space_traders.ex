@@ -33,6 +33,14 @@ defmodule SpaceTraders do
     post("/users/" <> @username <> "/ships", %{location: location, type: type}) |> unwrap()
   end
 
+  def buy_fuel(ship_id, quantity) do
+    post("/users/" <> @username <> "/purchase-orders", %{
+      shipId: ship_id,
+      good: "FUEL",
+      quantity: quantity
+    }) |> unwrap()
+  end
+
   defp unwrap(response) do
     {:ok, env} = response
     env.body
