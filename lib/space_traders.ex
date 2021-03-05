@@ -55,6 +55,22 @@ defmodule SpaceTraders do
     get("/users/" <> @username <> "/flight-plans/" <> flight_plan_id) |> unwrap()
   end
 
+  def buy_metals(ship_id, quantity) do
+    post("/users/" <> @username <> "/purchase-orders", %{
+      shipId: ship_id,
+      good: "METALS",
+      quantity: quantity
+    }) |> unwrap()
+  end
+
+  def sell_goods(ship_id, good, quantity) do
+    post("/users/" <> @username <> "/sell-orders", %{
+      shipId: ship_id,
+      good: good,
+      quantity: quantity
+    }) |> unwrap()
+  end
+
   defp unwrap(response) do
     {:ok, env} = response
     env.body
