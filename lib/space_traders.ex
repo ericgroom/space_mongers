@@ -1,85 +1,88 @@
 defmodule SpaceTraders do
-  use Tesla
+  alias SpaceTraders.ApiClient
 
-  plug Tesla.Middleware.BaseUrl, "https://api.spacetraders.io"
-  plug Tesla.Middleware.JSON
-  plug Tesla.Middleware.Headers, [{"Authorization", "Bearer #{@token}"}]
-
-  @username Application.fetch_env!(:space_traders, :username)
-  @token Application.fetch_env!(:space_traders, :token)
+  @type client() :: ApiClient.t()
+  @type response() :: any()
 
   @default_system "OE"
 
-  def status do
-    get("/game/status") |> unwrap()
+  @spec status(client()) :: response()
+  def status(client) do
+    Tesla.get(client, "/game/status") |> unwrap()
   end
 
-  def current_user do
-    get("/users/" <> @username) |> unwrap()
+  @spec current_user(client()) :: response()
+  def current_user(client) do
+    Tesla.get(client, "/users/:username") |> unwrap()
   end
 
-  def my_ships do
-    get("/users/" <> @username <> "/ships") |> unwrap()
+  @spec my_ships(client()) :: response()
+  def my_ships(client) do
+    Tesla.get(client, "/users/:username/ships") |> unwrap()
   end
 
-  def loans do
-    get("/game/loans") |> unwrap()
+  @spec loans(client()) :: response()
+  def loans(client) do
+    Tesla.get(client, "/game/loans") |> unwrap()
   end
 
-  def take_loan(type) do
-    post("/users/" <> @username <> "/loans", %{type: type}) |> unwrap()
+  @spec take_loan(client(), String.t()) :: response()
+  def take_loan(client, type) do
+    Tesla.post(client, "/users/:username/loans", %{type: type}) |> unwrap()
   end
 
-  def ships(class \\ nil) do
-    get("/game/ships", query: [class: class]) |> unwrap()
+  @spec ships(client(), String.t() | nil) :: response()
+  def ships(client, class \\ nil) do
+    Tesla.get(client, "/game/ships", query: [class: class]) |> unwrap()
   end
 
-  def buy_ship(location, type) do
-    post("/users/" <> @username <> "/ships", %{location: location, type: type}) |> unwrap()
+  @spec buy_ship(client(), String.t(), String.t()) :: response()
+  def buy_ship(client, location, type) do
+    Tesla.post(client, "/users/:username/ships", %{location: location, type: type}) |> unwrap()
   end
 
-  def buy_fuel(ship_id, quantity) do
-    post("/users/" <> @username <> "/purchase-orders", %{
-      shipId: ship_id,
-      good: "FUEL",
-      quantity: quantity
-    }) |> unwrap()
+  @spec systems(client()) :: response()
+  def systems(client) do
+    Tesla.get(client, "/game/systems") |> unwrap()
   end
 
-  def systems do
-    get("/game/systems") |> unwrap()
+  @spec location_info(client(), String.t()) :: response()
+  def location_info(client, symbol) do
+    Tesla.get(client, "/game/locations/" <> symbol) |> unwrap()
   end
 
-  def location_info(symbol) do
-    get("/game/locations/" <> symbol) |> unwrap()
+  @spec locations(client(), String.t() | nil, String.t()) :: response()
+  def locations(client, location_type \\ nil, system \\ @default_system) do
+    Tesla.get(client, "/game/systems/" <> system <> "/locations", [query: [type: location_type]]) |> unwrap()
   end
 
-  def locations(location_type \\ nil, system \\ @default_system) do
-    get("/game/systems/" <> system <> "/locations", [query: [type: location_type]]) |> unwrap()
+  @spec create_flight_plan(client(), String.t(), String.t()) :: response()
+  def create_flight_plan(client, ship_id, destination) do
+    Tesla.post(client, "/users/:username/flight-plans", %{shipId: ship_id, destination: destination}) |> unwrap()
   end
 
-  def create_flight_plan(ship_id, destination) do
-    post("/users/" <> @username <> "/flight-plans", %{shipId: ship_id, destination: destination}) |> unwrap()
+  @spec view_flight_plan(client(), String.t()) :: response()
+  def view_flight_plan(client, flight_plan_id) do
+    Tesla.get(client, "/users/:username/flight-plans/" <> flight_plan_id) |> unwrap()
   end
 
-  def view_flight_plan(flight_plan_id) do
-    get("/users/" <> @username <> "/flight-plans/" <> flight_plan_id) |> unwrap()
+  @spec available_trades(client(), String.t()) :: response()
+  def available_trades(client, location) do
+    Tesla.get(client, "/game/locations/" <> location <> "/marketplace") |> unwrap()
   end
 
-  def available_trades(location) do
-    get("/game/locations/" <> location <> "/marketplace") |> unwrap()
-  end
-
-  def buy_goods(ship_id, good, quantity) do
-    post("/users/" <> @username <> "/purchase-orders", %{
+  @spec buy_goods(client(), String.t(), String.t(), number()) :: response()
+  def buy_goods(client, ship_id, good, quantity) do
+    Tesla.post(client, "/users/:username/purchase-orders", %{
       shipId: ship_id,
       good: good,
       quantity: quantity
     }) |> unwrap()
   end
 
-  def sell_goods(ship_id, good, quantity) do
-    post("/users/" <> @username <> "/sell-orders", %{
+  @spec sell_goods(client(), String.t(), String.t(), number()) :: response()
+  def sell_goods(client, ship_id, good, quantity) do
+    Tesla.post(client, "/users/:username/sell-orders", %{
       shipId: ship_id,
       good: good,
       quantity: quantity
