@@ -8,6 +8,8 @@ defmodule SpaceTraders do
   @username Application.fetch_env!(:space_traders, :username)
   @token Application.fetch_env!(:space_traders, :token)
 
+  @default_system "OE"
+
   def status do
     get("/game/status") |> unwrap()
   end
@@ -39,6 +41,18 @@ defmodule SpaceTraders do
       good: "FUEL",
       quantity: quantity
     }) |> unwrap()
+  end
+
+  def find_asteroid(system \\ @default_system) do
+    get("/game/systems/" <> system <> "/locations", [query: [type: "ASTEROID"]]) |> unwrap()
+  end
+
+  def create_flight_plan(ship_id, destination) do
+    post("/users/" <> @username <> "/flight-plans", %{shipId: ship_id, destination: destination}) |> unwrap()
+  end
+
+  def view_flight_plan(flight_plan_id) do
+    get("/users/" <> @username <> "/flight-plans/" <> flight_plan_id) |> unwrap()
   end
 
   defp unwrap(response) do
