@@ -24,9 +24,17 @@ defmodule SpaceTraders do
     post("/users/" <> @username <> "/loans", %{type: type}) |> unwrap()
   end
 
+  @spec ships(String.t() | nil) :: any
+  def ships(class \\ nil) do
+    get("/game/ships", query: [class: class]) |> unwrap()
+  end
+
+  def buy_ship(location, type) do
+    post("/users/" <> @username <> "/ships", %{location: location, type: type}) |> unwrap()
+  end
+
   defp unwrap(response) do
     {:ok, env} = response
-    IO.inspect response
     env.body
   end
 end
