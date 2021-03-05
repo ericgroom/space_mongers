@@ -3,7 +3,7 @@ defmodule SpaceTraders do
 
   plug Tesla.Middleware.BaseUrl, "https://api.spacetraders.io"
   plug Tesla.Middleware.JSON
-  plug Tesla.Middleware.Query, [token: @token]
+  plug Tesla.Middleware.Headers, [{"Authorization", "Bearer #{@token}"}]
 
   @username Application.fetch_env!(:space_traders, :username)
   @token Application.fetch_env!(:space_traders, :token)
