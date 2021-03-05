@@ -70,10 +70,10 @@ defmodule SpaceTraders do
     get("/game/locations/" <> location <> "/marketplace") |> unwrap()
   end
 
-  def buy_metals(ship_id, quantity) do
+  def buy_goods(ship_id, good, quantity) do
     post("/users/" <> @username <> "/purchase-orders", %{
       shipId: ship_id,
-      good: "METALS",
+      good: good,
       quantity: quantity
     }) |> unwrap()
   end
