@@ -6,4 +6,8 @@ import Config
 
 config :tesla, adapter: Tesla.Adapter.Hackney
 
+config :tesla, Tesla.Middleware.Logger,
+  debug: false,
+  filter_headers: ["authorization"]
+
 import_config("#{Mix.env()}.config.exs")

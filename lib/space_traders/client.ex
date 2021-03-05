@@ -5,6 +5,7 @@ defmodule SpaceTraders.ApiClient do
   @spec new(String.t(), String.t()) :: t()
   def new(username, token) do
     middleware = [
+      Tesla.Middleware.Logger,
       {Tesla.Middleware.BaseUrl, "https://api.spacetraders.io"},
       Tesla.Middleware.JSON,
       {Tesla.Middleware.Headers, [{"Authorization", "Bearer #{token}"}]},
@@ -13,5 +14,12 @@ defmodule SpaceTraders.ApiClient do
     ]
 
     Tesla.client(middleware)
+  end
+
+  @spec new :: t()
+  def new() do
+    username = Application.fetch_env!(:space_traders, :username)
+    token = Application.fetch_env!(:space_traders, :token)
+    new(username, token)
   end
 end
