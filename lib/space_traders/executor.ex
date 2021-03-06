@@ -4,11 +4,16 @@ defmodule SpaceTraders.Executor do
 
   # TODO telemetry on wait time
   def init(opts) do
+    Logger.debug("Executor init")
     {:ok, %{opts: opts, jobs: [], past_jobs: []}}
   end
 
-  def add_job(pid, execute, cost_in_points) when is_function(execute, 0) and is_integer(cost_in_points) do
-    GenServer.call(pid, {:enqueue, {execute, cost_in_points}})
+  def start_link(state \\ []) do
+    GenServer.start_link(__MODULE__, state, name: __MODULE__)
+  end
+
+  def add_job(execute, cost_in_points) when is_function(execute, 0) and is_integer(cost_in_points) do
+    GenServer.call(__MODULE__, {:enqueue, {execute, cost_in_points}})
   end
 
   def handle_call({:enqueue, {execute, cost_in_points}}, from, %{jobs: jobs} = state) do
@@ -33,7 +38,7 @@ defmodule SpaceTraders.Executor do
     # TODO notify sender
     if cost_in_points > points_per_interval, do: raise "cannot schedule a job this big"
 
-    if cost_in_points + used_points < points_per_interval do
+    if cost_in_points + used_points <= points_per_interval do
       result = exec_job.()
       GenServer.reply(from, result)
       with_completed = [{System.monotonic_time(), cost_in_points} | unexpired_past_jobs]
@@ -69,7 +74,7 @@ defmodule SpaceTraders.Executor do
     diff_native = now - executed_at
     diff_milli = System.convert_time_unit(diff_native, :native, :millisecond)
     delay = time_interval - diff_milli
-    delay_normalized = if delay >= 0, do: delay, else: 100
+    delay_normalized = if delay >= 0, do: ceil(delay), else: 100
     Logger.debug("trying to run again in #{delay_normalized}ms")
     Process.send_after(self(), :run_job, delay_normalized)
   end
