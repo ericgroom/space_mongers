@@ -16,10 +16,16 @@ defmodule SpaceTraders.PointTimeRateLimiter do
     GenServer.call(__MODULE__, {:enqueue, {execute, cost_in_points}})
   end
 
-  def handle_call({:enqueue, {execute, cost_in_points}}, from, %{jobs: jobs} = state) do
-    Logger.debug("enqueueing job from #{inspect from}")
-    Process.send_after(self(), :run_job, 10) # small delay for state update to occur
-    {:noreply, %{state | jobs: jobs ++ [{from, execute, cost_in_points}]}}
+  def handle_call({:enqueue, {execute, cost_in_points}}, from, %{jobs: jobs, opts: opts} = state) do
+    points_per_interval = opts[:points_per_interval] || 10.0
+
+    if cost_in_points > points_per_interval do
+      {:reply, {:error, "Job is greater than the maximum number of points available"}, state}
+    else
+      Logger.debug("enqueueing job from #{inspect from}")
+      Process.send_after(self(), :run_job, 10) # small delay for state update to occur
+      {:noreply, %{state | jobs: jobs ++ [{from, execute, cost_in_points}]}}
+    end
   end
 
   def handle_info(:run_job, %{jobs: [next_job | remaining_jobs], past_jobs: past_jobs, opts: opts} = state) do
@@ -34,9 +40,6 @@ defmodule SpaceTraders.PointTimeRateLimiter do
 
     {from, exec_job, cost_in_points} = next_job
     Logger.debug("points in use: #{used_points}, trying to run for #{inspect from} with cost of #{cost_in_points}")
-
-    # TODO notify sender
-    if cost_in_points > points_per_interval, do: raise "cannot schedule a job this big"
 
     if cost_in_points + used_points <= points_per_interval do
       result = exec_job.()
