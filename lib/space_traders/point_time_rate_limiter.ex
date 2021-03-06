@@ -50,7 +50,7 @@ defmodule SpaceTraders.PointTimeRateLimiter do
       {:noreply, %{state | jobs: remaining_jobs, past_jobs: with_completed }}
     else
       Logger.debug("couldn't schedule #{inspect from}")
-      schedule_failure(past_jobs, cost_in_points, time_interval)
+      schedule_failure(unexpired_past_jobs, time_interval)
       {:noreply, %{state | past_jobs: unexpired_past_jobs}}
     end
   end
@@ -67,16 +67,17 @@ defmodule SpaceTraders.PointTimeRateLimiter do
   defp schedule_success([]), do: :ok
   defp schedule_success([_ | _]), do: Process.send(self(), :run_job, [])
 
-  defp schedule_failure(past_jobs, cost_of_next_job, time_interval) do
-    # TODO sum points
-    {executed_at, _} = past_jobs
-      |> Enum.sort_by(fn {executed_at, _} -> executed_at end)
-      |> List.first()
+  defp schedule_failure([_|_] = past_jobs, time_interval) do
+    # try to run job again after an element in past_jobs expires
+    next_expiration = past_jobs
+      |> Enum.map(fn {executed_at, _} -> executed_at end)
+      |> Enum.min()
 
     now = System.monotonic_time()
-    diff_native = now - executed_at
+    diff_native = now - next_expiration
     diff_milli = System.convert_time_unit(diff_native, :native, :millisecond)
     delay = time_interval - diff_milli
+    # if delay is negative, just do some arbitrary delay, it shouldn't happen in practice
     delay_normalized = if delay >= 0, do: ceil(delay), else: 100
     Logger.debug("trying to run again in #{delay_normalized}ms")
     Process.send_after(self(), :run_job, delay_normalized)
