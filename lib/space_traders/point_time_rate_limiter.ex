@@ -1,10 +1,10 @@
-defmodule SpaceTraders.Executor do
+defmodule SpaceTraders.PointTimeRateLimiter do
   use GenServer
   require Logger
 
   # TODO telemetry on wait time
   def init(opts) do
-    Logger.debug("Executor init")
+    Logger.debug("PointTimeRateLimiter init")
     {:ok, %{opts: opts, jobs: [], past_jobs: []}}
   end
 

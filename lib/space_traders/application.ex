@@ -8,7 +8,7 @@ defmodule SpaceTraders.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      SpaceTraders.Executor
+      SpaceTraders.PointTimeRateLimiter
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
