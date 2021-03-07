@@ -13,7 +13,7 @@ defmodule SpaceMongers do
   def status(client, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.get(client, "/game/status")
-      |> unwrap(fn env -> env.body["status"] end, opts)
+      |> format(fn env -> env.body["status"] end, opts)
     end, @default_cost)
   end
 
@@ -21,7 +21,7 @@ defmodule SpaceMongers do
   def current_user(client, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.get(client, "/users/:username")
-      |> unwrap(fn env -> env.body["user"] end, opts)
+      |> format(fn env -> env.body["user"] end, opts)
     end, @default_cost)
   end
 
@@ -29,7 +29,7 @@ defmodule SpaceMongers do
   def my_ships(client, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.get(client, "/users/:username/ships")
-      |> unwrap(fn env -> env.body["ships"] end, opts)
+      |> format(fn env -> env.body["ships"] end, opts)
     end, @default_cost)
   end
 
@@ -37,14 +37,14 @@ defmodule SpaceMongers do
   def loans(client, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.get(client, "/game/loans")
-      |> unwrap(fn env -> env.body["loans"] end, opts)
+      |> format(fn env -> env.body["loans"] end, opts)
     end, @default_cost)
   end
 
   @spec take_loan(client(), String.t(), options()) :: response()
   def take_loan(client, type, opts \\ []) do
     Executor.add_job(fn ->
-      Tesla.post(client, "/users/:username/loans", %{type: type}) |> unwrap(opts)
+      Tesla.post(client, "/users/:username/loans", %{type: type}) |> format(opts)
     end, @default_cost)
   end
 
@@ -52,14 +52,14 @@ defmodule SpaceMongers do
   def ships(client, class \\ nil, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.get(client, "/game/ships", query: [class: class])
-      |> unwrap(fn env -> env.body["ships"] end, opts)
+      |> format(fn env -> env.body["ships"] end, opts)
     end, @default_cost)
   end
 
   @spec buy_ship(client(), String.t(), String.t(), options()) :: response()
   def buy_ship(client, location, type, opts \\ []) do
     Executor.add_job(fn ->
-      Tesla.post(client, "/users/:username/ships", %{location: location, type: type}) |> unwrap(opts)
+      Tesla.post(client, "/users/:username/ships", %{location: location, type: type}) |> format(opts)
     end, @default_cost)
   end
 
@@ -67,7 +67,7 @@ defmodule SpaceMongers do
   def systems(client, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.get(client, "/game/systems")
-      |> unwrap(fn env -> env.body["systems"] end, opts)
+      |> format(fn env -> env.body["systems"] end, opts)
     end, @default_cost)
   end
 
@@ -75,7 +75,7 @@ defmodule SpaceMongers do
   def location_info(client, symbol, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.get(client, "/game/locations/" <> symbol)
-      |> unwrap(opts)
+      |> format(opts)
     end, @default_cost)
   end
 
@@ -83,7 +83,7 @@ defmodule SpaceMongers do
   def locations(client, location_type \\ nil, system \\ @default_system, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.get(client, "/game/systems/" <> system <> "/locations", [query: [type: location_type]])
-      |> unwrap(fn env -> env.body["locations"] end, opts)
+      |> format(fn env -> env.body["locations"] end, opts)
     end, @default_cost)
   end
 
@@ -91,7 +91,7 @@ defmodule SpaceMongers do
   def create_flight_plan(client, ship_id, destination, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.post(client, "/users/:username/flight-plans", %{shipId: ship_id, destination: destination})
-      |> unwrap(opts)
+      |> format(opts)
     end, @default_cost)
   end
 
@@ -99,7 +99,7 @@ defmodule SpaceMongers do
   def view_flight_plan(client, flight_plan_id, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.get(client, "/users/:username/flight-plans/" <> flight_plan_id)
-      |> unwrap(opts)
+      |> format(opts)
     end, @default_cost)
   end
 
@@ -107,7 +107,7 @@ defmodule SpaceMongers do
   def available_trades(client, location, opts \\ []) do
     Executor.add_job(fn ->
       Tesla.get(client, "/game/locations/" <> location <> "/marketplace")
-      |> unwrap(opts)
+      |> format(opts)
     end, @default_cost)
   end
 
@@ -118,7 +118,7 @@ defmodule SpaceMongers do
         shipId: ship_id,
         good: good,
         quantity: quantity
-      }) |> unwrap(opts)
+      }) |> format(opts)
     end, @default_cost)
   end
 
@@ -129,15 +129,15 @@ defmodule SpaceMongers do
         shipId: ship_id,
         good: good,
         quantity: quantity
-      }) |> unwrap(opts)
+      }) |> format(opts)
     end, @default_cost)
   end
 
-  defp unwrap(response, opts) do
-    unwrap(response, fn env -> env.body end, opts)
+  defp format(response, opts) do
+    format(response, fn env -> env.body end, opts)
   end
 
-  defp unwrap(response, extract_success, opts)  do
+  defp format(response, extract_success, opts)  do
     case response do
       {:ok, env} ->
         if env.status >= 400 do
