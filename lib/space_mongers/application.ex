@@ -1,4 +1,4 @@
-defmodule SpaceTraders.Application do
+defmodule SpaceMongers.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -8,13 +8,13 @@ defmodule SpaceTraders.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      SpaceTraders.PointTimeRateLimiter,
-      {Task.Supervisor, name: SpaceTraders.PointTimeRateLimiterTaskSupervisor}
+      SpaceMongers.PointTimeRateLimiter,
+      {Task.Supervisor, name: SpaceMongers.PointTimeRateLimiterTaskSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: SpaceTraders.Supervisor]
+    opts = [strategy: :one_for_one, name: SpaceMongers.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

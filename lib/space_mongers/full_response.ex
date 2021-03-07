@@ -1,5 +1,5 @@
-defmodule SpaceTraders.FullResponse do
-  @type t() :: %SpaceTraders.FullResponse{method: atom(), status: number(), url: String.t(), headers: list(), body: map()}
+defmodule SpaceMongers.FullResponse do
+  @type t() :: %SpaceMongers.FullResponse{method: atom(), status: number(), url: String.t(), headers: list(), body: map()}
 
   defstruct [:status, :method, :url, :headers, :body]
 

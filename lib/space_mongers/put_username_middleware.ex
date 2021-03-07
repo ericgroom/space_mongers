@@ -1,4 +1,4 @@
-defmodule SpaceTraders.PutUsernameMiddleware do
+defmodule SpaceMongers.PutUsernameMiddleware do
   @moduledoc """
   Places :username in the path_params list
   """

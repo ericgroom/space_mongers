@@ -1,6 +1,6 @@
-defmodule SpaceTraders do
-  alias SpaceTraders.{ApiClient, FullResponse}
-  alias SpaceTraders.PointTimeRateLimiter, as: Executor
+defmodule SpaceMongers do
+  alias SpaceMongers.{ApiClient, FullResponse}
+  alias SpaceMongers.PointTimeRateLimiter, as: Executor
 
   @type client() :: ApiClient.t()
   @type response() :: {:ok | :error, any(), FullResponse.t()}

@@ -1,4 +1,4 @@
-defmodule SpaceTraders.PointTimeRateLimiter do
+defmodule SpaceMongers.PointTimeRateLimiter do
   use GenServer
   require Logger
 
@@ -42,7 +42,7 @@ defmodule SpaceTraders.PointTimeRateLimiter do
     Logger.debug("points in use: #{used_points}, trying to run for #{inspect from} with cost of #{cost_in_points}")
 
     if cost_in_points + used_points <= points_per_interval do
-      Task.Supervisor.async_nolink(SpaceTraders.PointTimeRateLimiterTaskSupervisor, fn ->
+      Task.Supervisor.async_nolink(SpaceMongers.PointTimeRateLimiterTaskSupervisor, fn ->
         try do
           result = exec_job.()
           GenServer.reply(from, result)

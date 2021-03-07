@@ -1,4 +1,4 @@
-defmodule SpaceTraders.ApiClient do
+defmodule SpaceMongers.ApiClient do
 
   @type t() :: Tesla.Client.t()
 
@@ -9,7 +9,7 @@ defmodule SpaceTraders.ApiClient do
       {Tesla.Middleware.BaseUrl, "https://api.spacetraders.io"},
       Tesla.Middleware.JSON,
       {Tesla.Middleware.Headers, [{"Authorization", "Bearer #{token}"}]},
-      {SpaceTraders.PutUsernameMiddleware, username},
+      {SpaceMongers.PutUsernameMiddleware, username},
       Tesla.Middleware.PathParams
     ]
 
@@ -18,8 +18,8 @@ defmodule SpaceTraders.ApiClient do
 
   @spec new :: t()
   def new() do
-    username = Application.fetch_env!(:space_traders, :username)
-    token = Application.fetch_env!(:space_traders, :token)
+    username = Application.fetch_env!(:space_mongers, :username)
+    token = Application.fetch_env!(:space_mongers, :token)
     new(username, token)
   end
 end

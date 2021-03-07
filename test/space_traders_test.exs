@@ -1,8 +1,8 @@
-defmodule SpaceTradersTest do
+defmodule SpaceMongersTest do
   use ExUnit.Case
-  doctest SpaceTraders
+  doctest SpaceMongers
 
   test "greets the world" do
-    assert SpaceTraders.hello() == :world
+    assert SpaceMongers.hello() == :world
   end
 end

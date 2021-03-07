@@ -1,6 +1,6 @@
 import Config
 
-# config :space_traders,
+# config :space_mongers,
 #   username: "replace in other env",
 #   token: "replace in other env"
 
