@@ -1,7 +1,6 @@
 defmodule SpaceMongers.PutUsernameMiddleware do
-  @moduledoc """
-  Places :username in the path_params list
-  """
+  @moduledoc false
+
   @behaviour Tesla.Middleware
 
   @impl Tesla.Middleware

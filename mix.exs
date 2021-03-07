@@ -24,7 +24,8 @@ defmodule SpaceMongers.MixProject do
     [
       {:tesla, "~> 1.4.0"},
       {:hackney, "~> 1.17.0"},
-      {:jason, ">= 1.0.0"}
+      {:jason, ">= 1.0.0"},
+      {:ex_doc, "~> 0.23", only: :dev, runtime: false},
     ]
   end
 end

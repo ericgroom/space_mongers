@@ -1,7 +1,16 @@
 defmodule SpaceMongers.ApiClient do
 
+  @moduledoc """
+  Authenticated client required by most functions.
+
+  The type t() is subject to change, so use individual fields at your own risk.
+  """
+
   @type t() :: Tesla.Client.t()
 
+  @doc """
+  Creates an ApiClient
+  """
   @spec new(String.t(), String.t()) :: t()
   def new(username, token) do
     middleware = [
