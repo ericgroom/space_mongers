@@ -15,11 +15,4 @@ defmodule SpaceMongers.ApiClient do
 
     Tesla.client(middleware)
   end
-
-  @spec new :: t()
-  def new() do
-    username = Application.fetch_env!(:space_mongers, :username)
-    token = Application.fetch_env!(:space_mongers, :token)
-    new(username, token)
-  end
 end

@@ -26,4 +26,4 @@ space_mongers-*.tar
 # Temporary files for e.g. tests
 /tmp
 
-dev.config.exs
+.private.iex.exs
