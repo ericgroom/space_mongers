@@ -8,7 +8,8 @@ defmodule SpaceTraders.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      SpaceTraders.PointTimeRateLimiter
+      SpaceTraders.PointTimeRateLimiter,
+      {Task.Supervisor, name: SpaceTraders.PointTimeRateLimiterTaskSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

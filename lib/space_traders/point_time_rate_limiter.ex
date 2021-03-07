@@ -42,10 +42,18 @@ defmodule SpaceTraders.PointTimeRateLimiter do
     Logger.debug("points in use: #{used_points}, trying to run for #{inspect from} with cost of #{cost_in_points}")
 
     if cost_in_points + used_points <= points_per_interval do
-      result = exec_job.()
-      GenServer.reply(from, result)
+      Task.Supervisor.async_nolink(SpaceTraders.PointTimeRateLimiterTaskSupervisor, fn ->
+        try do
+          result = exec_job.()
+          GenServer.reply(from, result)
+          Logger.debug("result sent to #{inspect from}")
+        rescue
+          e in RuntimeError ->
+            GenServer.reply(from, {:error, e})
+            Logger.debug("error sent to #{inspect from}")
+        end
+      end)
       with_completed = [{System.monotonic_time(), cost_in_points} | unexpired_past_jobs]
-      Logger.debug("result sent to #{inspect from}")
       schedule_success(remaining_jobs)
       {:noreply, %{state | jobs: remaining_jobs, past_jobs: with_completed }}
     else
@@ -53,6 +61,11 @@ defmodule SpaceTraders.PointTimeRateLimiter do
       schedule_failure(unexpired_past_jobs, time_interval)
       {:noreply, %{state | past_jobs: unexpired_past_jobs}}
     end
+  end
+
+  # needed as tasks will send messages back to the parent which we don't care about
+  def handle_info(_msg, state) do
+    {:noreply, state}
   end
 
   defp without_expired(past_jobs, time_interval) do
