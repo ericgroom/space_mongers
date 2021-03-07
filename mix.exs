@@ -7,7 +7,8 @@ defmodule SpaceMongers.MixProject do
       version: "0.1.0",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      docs: docs()
     ]
   end
 
@@ -26,6 +27,19 @@ defmodule SpaceMongers.MixProject do
       {:hackney, "~> 1.17.0"},
       {:jason, ">= 1.0.0"},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: extras()
+    ]
+  end
+
+  defp extras do
+    [
+      "README.md"
     ]
   end
 end
