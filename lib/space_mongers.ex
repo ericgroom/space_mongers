@@ -71,6 +71,19 @@ defmodule SpaceMongers do
   end
 
   @doc """
+  Gets the list of your loans
+
+  GET /users/:username/loans
+  """
+  @spec my_loans(client(), options()) :: response()
+  def my_loans(client, opts \\ []) do
+    Executor.add_job(fn ->
+      Tesla.get(client, "/users/:username/loans")
+      |> format(fn env -> env.body["loans"] end, opts)
+    end, @default_cost)
+  end
+
+  @doc """
   Purchases a loan of a certain type
 
   POST /users/:username/loans
