@@ -3,7 +3,7 @@
 **A Simple API wrapper for https://spacetraders.io**
 
 Features:
-* Covers all authenticated endpoints
+* Covers all endpoints
 * Automatic rate limiting to avoid overloading the servers and getting banned
 
 ## Installation
@@ -20,14 +20,20 @@ end
 
 ## Usage
 
-Using SpaceMongers requires you to already have a username and token on spacetraders.io. You can follow the [Getting Started](https://spacetraders.io/) guide to create a new user. 
+### Obtaining a username and token
+
+For most requests, you will need an authenticated client which requires you to pass a username and token. You can claim a username and token with the following code:
+
+```elixir
+{:ok, %{"user" => %{"username" => username}, "token" => token}} = SpaceMongers.claim_username("my_username")
+```
 
 ### Creating a client
 
 You will need an authenticated client in order to make requests.
 
 ```elixir
-client = SpaceMongers.ApiClient.new("my_username", "my_token")
+client = SpaceMongers.ApiClient.new(username, token)
 ```
 
 ### Making requests
