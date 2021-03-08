@@ -4,10 +4,14 @@ defmodule SpaceMongers.MixProject do
   def project do
     [
       app: :space_mongers,
+      name: "SpaceMongers",
       version: "0.1.0",
       elixir: "~> 1.11",
+      description: "A simple API wrapper for spacetraders.io",
+      source_url: "https://github.com/ericgroom/space_mongers",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      package: package(),
       docs: docs()
     ]
   end
@@ -27,6 +31,13 @@ defmodule SpaceMongers.MixProject do
       {:hackney, "~> 1.17.0"},
       {:jason, ">= 1.0.0"},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+    ]
+  end
+
+  defp package do
+    [
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/ericgroom/space_mongers"}
     ]
   end
 
