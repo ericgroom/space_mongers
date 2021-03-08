@@ -25,6 +25,7 @@ defmodule SpaceMongers do
   """
   @spec status(client(), options()) :: response()
   def status(client, opts \\ []) do
+    # TODO just use unauthenticated client
     Executor.add_job(fn ->
       Tesla.get(client, "/game/status")
       |> format(fn env -> env.body["status"] end, opts)
