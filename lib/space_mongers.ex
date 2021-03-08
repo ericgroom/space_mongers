@@ -8,7 +8,7 @@ defmodule SpaceMongers do
   All function calls here are automatically rate-limited to avoid overloading the servers and getting your user
   banned. Right now the rate limiting is quite agressive so expect SpaceMongers to become more efficient in the future.
   """
-  alias SpaceMongers.{ApiClient, FullResponse}
+  alias SpaceMongers.{ApiClient, FullResponse, UnauthenticatedApiClient}
   alias SpaceMongers.PointTimeRateLimiter, as: Executor
 
   @type client() :: ApiClient.t()
@@ -28,6 +28,21 @@ defmodule SpaceMongers do
     Executor.add_job(fn ->
       Tesla.get(client, "/game/status")
       |> format(fn env -> env.body["status"] end, opts)
+    end, @default_cost)
+  end
+
+  @doc """
+  Claim a username and obtain an auth token which can be used to make an authenticated client.
+
+  Make sure you save this token as you cannot reobtain it later!
+
+  POST /users/:username/token
+  """
+  @spec claim_username(String.t(), options()) :: response()
+  def claim_username(username, opts \\ []) do
+    Executor.add_job(fn ->
+      UnauthenticatedApiClient.post("/users/" <> username <> "/token", %{})
+      |> format(opts)
     end, @default_cost)
   end
 
@@ -253,7 +268,8 @@ defmodule SpaceMongers do
     end
   end
 
-  defp error_response(%{body: body}), do: {:error, body["error"]["message"] || body}
+  defp error_response(%{body: %{"error" => %{"message" => message}}}), do: {:error, message}
+  defp error_response(%{body: body}), do: {:error, body}
   defp include_response_if_needed({result, value}, env, opts) do
     if Keyword.get(opts, :include_full_response, false) do
       {result, value, FullResponse.new(env)}
