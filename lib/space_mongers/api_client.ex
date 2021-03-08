@@ -6,7 +6,7 @@ defmodule SpaceMongers.ApiClient do
   The type t() is subject to change, so use individual fields at your own risk.
   """
 
-  @type t() :: Tesla.Client.t()
+  @opaque t() :: Tesla.Client.t()
 
   @doc """
   Creates an ApiClient
