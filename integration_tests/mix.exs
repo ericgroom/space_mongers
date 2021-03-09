@@ -3,10 +3,11 @@ defmodule IntegrationTests.MixProject do
 
   def project do
     [
-      app: :integration_tests,
+      app: :space_mongers_integration,
       version: "0.1.0",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
+      elixirc_paths: ["lib", "test/support"],
       deps: deps()
     ]
   end

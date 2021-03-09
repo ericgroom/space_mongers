@@ -1,8 +1,10 @@
-defmodule IntegrationTestsTest do
+defmodule IntegrationTests do
   use ExUnit.Case
-  doctest IntegrationTests
 
-  test "greets the world" do
-    assert IntegrationTests.hello() == :world
+  describe "SpaceMongers" do
+    test "can create user" do
+      username = Utils.random_username()
+      assert {:ok, %{"user" => %{"username" => ^username}}} = SpaceMongers.claim_username(username)
+    end
   end
 end
