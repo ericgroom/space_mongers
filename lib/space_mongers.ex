@@ -8,8 +8,7 @@ defmodule SpaceMongers do
   All function calls here are automatically rate-limited to avoid overloading the servers and getting your user
   banned. Right now the rate limiting is quite agressive so expect SpaceMongers to become more efficient in the future.
   """
-  alias SpaceMongers.{ApiClient, FullResponse, UnauthenticatedApiClient}
-  alias SpaceMongers.PointTimeRateLimiter, as: Executor
+  alias SpaceMongers.{ApiClient, FullResponse, SpaceTraders}
 
   @type client() :: ApiClient.t()
   @type response() :: {:ok | :error, any()} | {:ok | :error, any(), FullResponse.t()}
@@ -26,10 +25,8 @@ defmodule SpaceMongers do
   @spec status(client(), options()) :: response()
   def status(client, opts \\ []) do
     # TODO just use unauthenticated client
-    Executor.add_job(fn ->
-      Tesla.get(client, "/game/status")
-      |> format(fn env -> env.body["status"] end, opts)
-    end, @default_cost)
+    SpaceTraders.status(client)
+    |> format(fn env -> env.body["status"] end, opts)
   end
 
   @doc """
@@ -41,10 +38,8 @@ defmodule SpaceMongers do
   """
   @spec claim_username(String.t(), options()) :: response()
   def claim_username(username, opts \\ []) do
-    Executor.add_job(fn ->
-      UnauthenticatedApiClient.post("/users/" <> username <> "/token", %{})
+    SpaceTraders.claim_username(username)
       |> format(opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -54,10 +49,8 @@ defmodule SpaceMongers do
   """
   @spec current_user(client(), options()) :: response()
   def current_user(client, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.get(client, "/users/:username")
+    SpaceTraders.current_user(client)
       |> format(fn env -> env.body["user"] end, opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -67,10 +60,8 @@ defmodule SpaceMongers do
   """
   @spec my_ships(client(), options()) :: response()
   def my_ships(client, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.get(client, "/users/:username/ships")
+    SpaceTraders.my_ships(client)
       |> format(fn env -> env.body["ships"] end, opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -80,10 +71,8 @@ defmodule SpaceMongers do
   """
   @spec loans(client(), options()) :: response()
   def loans(client, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.get(client, "/game/loans")
+    SpaceTraders.loans(client)
       |> format(fn env -> env.body["loans"] end, opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -93,10 +82,8 @@ defmodule SpaceMongers do
   """
   @spec my_loans(client(), options()) :: response()
   def my_loans(client, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.get(client, "/users/:username/loans")
+    SpaceTraders.my_loans(client)
       |> format(fn env -> env.body["loans"] end, opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -106,9 +93,8 @@ defmodule SpaceMongers do
   """
   @spec buy_loan(client(), String.t(), options()) :: response()
   def buy_loan(client, type, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.post(client, "/users/:username/loans", %{type: type}) |> format(opts)
-    end, @default_cost)
+    SpaceTraders.buy_loan(client, type)
+      |> format(opts)
   end
 
   @doc """
@@ -118,10 +104,8 @@ defmodule SpaceMongers do
   """
   @spec ships(client(), String.t() | nil, options()) :: response()
   def ships(client, class \\ nil, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.get(client, "/game/ships", query: [class: class])
+    SpaceTraders.ships(client, class)
       |> format(fn env -> env.body["ships"] end, opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -133,9 +117,8 @@ defmodule SpaceMongers do
   """
   @spec buy_ship(client(), String.t(), String.t(), options()) :: response()
   def buy_ship(client, location, type, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.post(client, "/users/:username/ships", %{location: location, type: type}) |> format(opts)
-    end, @default_cost)
+    SpaceTraders.buy_ship(client, location, type)
+      |> format(opts)
   end
 
   @doc """
@@ -145,10 +128,8 @@ defmodule SpaceMongers do
   """
   @spec systems(client(), options()) :: response()
   def systems(client, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.get(client, "/game/systems")
+    SpaceTraders.systems(client)
       |> format(fn env -> env.body["systems"] end, opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -158,10 +139,8 @@ defmodule SpaceMongers do
   """
   @spec location_info(client(), String.t(), options()) :: response()
   def location_info(client, symbol, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.get(client, "/game/locations/" <> symbol)
+    SpaceTraders.location_info(client, symbol)
       |> format(opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -172,10 +151,8 @@ defmodule SpaceMongers do
   """
   @spec locations(client(), String.t() | nil, String.t(), options()) :: response()
   def locations(client, location_type \\ nil, system \\ @default_system, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.get(client, "/game/systems/" <> system <> "/locations", [query: [type: location_type]])
+    SpaceTraders.locations(client, system, location_type)
       |> format(fn env -> env.body["locations"] end, opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -185,10 +162,8 @@ defmodule SpaceMongers do
   """
   @spec create_flight_plan(client(), String.t(), String.t(), options()) :: response()
   def create_flight_plan(client, ship_id, destination, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.post(client, "/users/:username/flight-plans", %{shipId: ship_id, destination: destination})
+    SpaceTraders.create_flight_plan(client, ship_id, destination)
       |> format(opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -198,10 +173,8 @@ defmodule SpaceMongers do
   """
   @spec view_flight_plan(client(), String.t(), options()) :: response()
   def view_flight_plan(client, flight_plan_id, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.get(client, "/users/:username/flight-plans/" <> flight_plan_id)
+    SpaceTraders.view_flight_plan(client, flight_plan_id)
       |> format(opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -211,10 +184,8 @@ defmodule SpaceMongers do
   """
   @spec available_trades(client(), String.t(), options()) :: response()
   def available_trades(client, location, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.get(client, "/game/locations/" <> location <> "/marketplace")
+    SpaceTraders.available_trades(client, location)
       |> format(opts)
-    end, @default_cost)
   end
 
   @doc """
@@ -224,13 +195,8 @@ defmodule SpaceMongers do
   """
   @spec buy_goods(client(), String.t(), String.t(), number(), options()) :: response()
   def buy_goods(client, ship_id, good, quantity, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.post(client, "/users/:username/purchase-orders", %{
-        shipId: ship_id,
-        good: good,
-        quantity: quantity
-      }) |> format(opts)
-    end, @default_cost)
+    SpaceTraders.buy_goods(client, ship_id, good, quantity)
+      |> format(opts)
   end
 
   @doc """
@@ -240,28 +206,23 @@ defmodule SpaceMongers do
   """
   @spec sell_goods(client(), String.t(), String.t(), number(), options()) :: response()
   def sell_goods(client, ship_id, good, quantity, opts \\ []) do
-    Executor.add_job(fn ->
-      Tesla.post(client, "/users/:username/sell-orders", %{
-        shipId: ship_id,
-        good: good,
-        quantity: quantity
-      }) |> format(opts)
-    end, @default_cost)
+    SpaceTraders.sell_goods(client, ship_id, good, quantity)
+      |> format(opts)
   end
 
-  defp format(response, opts) do
-    format(response, fn env -> env.body end, opts)
+  defp format(result, opts) do
+    format(result, fn env -> env.body end, opts)
   end
 
-  defp format(response, extract_success, opts)  do
-    case response do
-      {:ok, env} ->
-        if env.status >= 400 do
-          error_response(env)
-            |> include_response_if_needed(env, opts)
+  defp format(result, extract_success, opts)  do
+    case result do
+      {:ok, response} ->
+        if response.status >= 400 do
+          error_response(response)
+            |> include_response_if_needed(response, opts)
         else
-          {:ok, extract_success.(env)}
-            |> include_response_if_needed(env, opts)
+          {:ok, extract_success.(response)}
+            |> include_response_if_needed(response, opts)
         end
       {:error, env} ->
         error_response(env)
@@ -271,9 +232,9 @@ defmodule SpaceMongers do
 
   defp error_response(%{body: %{"error" => %{"message" => message}}}), do: {:error, message}
   defp error_response(%{body: body}), do: {:error, body}
-  defp include_response_if_needed({result, value}, env, opts) do
+  defp include_response_if_needed({result, value}, response, opts) do
     if Keyword.get(opts, :include_full_response, false) do
-      {result, value, FullResponse.new(env)}
+      {result, value, response}
     else
       {result, value}
     end
