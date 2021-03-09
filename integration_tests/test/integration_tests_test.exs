@@ -1,5 +1,5 @@
 defmodule IntegrationTests do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   describe "SpaceMongers" do
     test "can get server status" do
