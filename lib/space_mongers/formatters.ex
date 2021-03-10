@@ -8,8 +8,8 @@ defmodule SpaceMongers.Formatters do
         else
           success_response(response, extract_success, skip_deserialization)
         end
-      {:error, env} ->
-        error_response(env, skip_deserialization)
+      {:error, reason} ->
+        error_response(reason, skip_deserialization)
     end
   end
 
