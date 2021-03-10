@@ -1,4 +1,6 @@
 defmodule SpaceMongers.Formatters do
+  @moduledoc false
+
   def format_response(result, extract_success, opts)  do
     skip_deserialization = Keyword.get(opts, :skip_deserialization, false)
     case result do
