@@ -5,7 +5,7 @@ defmodule SpaceMongers.MixProject do
     [
       app: :space_mongers,
       name: "SpaceMongers",
-      version: "0.1.1",
+      version: "0.2.0",
       elixir: "~> 1.11",
       description: "A simple API wrapper for spacetraders.io",
       source_url: "https://github.com/ericgroom/space_mongers",
