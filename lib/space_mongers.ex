@@ -139,10 +139,13 @@ defmodule SpaceMongers do
 
   POST /users/:username/ships
   """
-  @spec buy_ship(client(), String.t(), String.t(), options()) :: response(any())
+  @spec buy_ship(client(), String.t(), String.t(), options()) :: response(Models.UserData.t())
   def buy_ship(client, location, type, opts \\ []) do
     SpaceTraders.buy_ship(client, location, type)
-      |> format(opts)
+      |> format(fn response ->
+        response.body["user"]
+          |> Parsers.parse_user_data()
+      end, opts)
   end
 
   @doc """
