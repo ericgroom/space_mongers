@@ -11,7 +11,7 @@ defmodule SpaceMongers do
   alias SpaceMongers.{ApiClient, FullResponse, SpaceTraders}
 
   @type client() :: ApiClient.t()
-  @type response() :: {:ok | :error, any()} | {:ok | :error, any(), FullResponse.t()}
+  @type response(t) :: {:ok, t} | {:error, any()} | {:ok, t, FullResponse.t()} | {:error, any(), FullResponse.t()}
   @type options() :: [include_full_response: boolean()]
 
   @default_system "OE"
@@ -21,7 +21,7 @@ defmodule SpaceMongers do
 
   GET /game/status
   """
-  @spec status(client(), options()) :: response()
+  @spec status(client(), options()) :: response(any())
   def status(client, opts \\ []) do
     # TODO just use unauthenticated client
     SpaceTraders.status(client)
@@ -35,7 +35,7 @@ defmodule SpaceMongers do
 
   POST /users/:username/token
   """
-  @spec claim_username(String.t(), options()) :: response()
+  @spec claim_username(String.t(), options()) :: response(any())
   def claim_username(username, opts \\ []) do
     SpaceTraders.claim_username(username)
       |> format(opts)
@@ -46,7 +46,7 @@ defmodule SpaceMongers do
 
   GET /users/:username
   """
-  @spec current_user(client(), options()) :: response()
+  @spec current_user(client(), options()) :: response(any())
   def current_user(client, opts \\ []) do
     SpaceTraders.current_user(client)
       |> format(fn env -> env.body["user"] end, opts)
@@ -57,7 +57,7 @@ defmodule SpaceMongers do
 
   GET /users/:username/ships
   """
-  @spec my_ships(client(), options()) :: response()
+  @spec my_ships(client(), options()) :: response(any())
   def my_ships(client, opts \\ []) do
     SpaceTraders.my_ships(client)
       |> format(fn env -> env.body["ships"] end, opts)
@@ -68,7 +68,7 @@ defmodule SpaceMongers do
 
   GET /game/loans
   """
-  @spec loans(client(), options()) :: response()
+  @spec loans(client(), options()) :: response(any())
   def loans(client, opts \\ []) do
     SpaceTraders.loans(client)
       |> format(fn env -> env.body["loans"] end, opts)
@@ -79,7 +79,7 @@ defmodule SpaceMongers do
 
   GET /users/:username/loans
   """
-  @spec my_loans(client(), options()) :: response()
+  @spec my_loans(client(), options()) :: response(any())
   def my_loans(client, opts \\ []) do
     SpaceTraders.my_loans(client)
       |> format(fn env -> env.body["loans"] end, opts)
@@ -90,7 +90,7 @@ defmodule SpaceMongers do
 
   POST /users/:username/loans
   """
-  @spec buy_loan(client(), String.t(), options()) :: response()
+  @spec buy_loan(client(), String.t(), options()) :: response(any())
   def buy_loan(client, type, opts \\ []) do
     SpaceTraders.buy_loan(client, type)
       |> format(opts)
@@ -101,7 +101,7 @@ defmodule SpaceMongers do
 
   GET /game/ships
   """
-  @spec ships(client(), String.t() | nil, options()) :: response()
+  @spec ships(client(), String.t() | nil, options()) :: response(any())
   def ships(client, class \\ nil, opts \\ []) do
     SpaceTraders.ships(client, class)
       |> format(fn env -> env.body["ships"] end, opts)
@@ -114,7 +114,7 @@ defmodule SpaceMongers do
 
   POST /users/:username/ships
   """
-  @spec buy_ship(client(), String.t(), String.t(), options()) :: response()
+  @spec buy_ship(client(), String.t(), String.t(), options()) :: response(any())
   def buy_ship(client, location, type, opts \\ []) do
     SpaceTraders.buy_ship(client, location, type)
       |> format(opts)
@@ -125,7 +125,7 @@ defmodule SpaceMongers do
 
   GET /game/systems
   """
-  @spec systems(client(), options()) :: response()
+  @spec systems(client(), options()) :: response(any())
   def systems(client, opts \\ []) do
     SpaceTraders.systems(client)
       |> format(fn env -> env.body["systems"] end, opts)
@@ -136,7 +136,7 @@ defmodule SpaceMongers do
 
   GET /game/locations/:symbol
   """
-  @spec location_info(client(), String.t(), options()) :: response()
+  @spec location_info(client(), String.t(), options()) :: response(any())
   def location_info(client, symbol, opts \\ []) do
     SpaceTraders.location_info(client, symbol)
       |> format(opts)
@@ -148,7 +148,7 @@ defmodule SpaceMongers do
 
   GET /game/systems/:system/locations
   """
-  @spec locations(client(), String.t() | nil, String.t(), options()) :: response()
+  @spec locations(client(), String.t() | nil, String.t(), options()) :: response(any())
   def locations(client, location_type \\ nil, system \\ @default_system, opts \\ []) do
     SpaceTraders.locations(client, system, location_type)
       |> format(fn env -> env.body["locations"] end, opts)
@@ -159,7 +159,7 @@ defmodule SpaceMongers do
 
   POST /users/:username/flight-plans
   """
-  @spec create_flight_plan(client(), String.t(), String.t(), options()) :: response()
+  @spec create_flight_plan(client(), String.t(), String.t(), options()) :: response(any())
   def create_flight_plan(client, ship_id, destination, opts \\ []) do
     SpaceTraders.create_flight_plan(client, ship_id, destination)
       |> format(opts)
@@ -170,7 +170,7 @@ defmodule SpaceMongers do
 
   GET /users/:username/flight-plans/:id
   """
-  @spec view_flight_plan(client(), String.t(), options()) :: response()
+  @spec view_flight_plan(client(), String.t(), options()) :: response(any())
   def view_flight_plan(client, flight_plan_id, opts \\ []) do
     SpaceTraders.view_flight_plan(client, flight_plan_id)
       |> format(opts)
@@ -181,7 +181,7 @@ defmodule SpaceMongers do
 
   GET /game/locations/:location/marketplace
   """
-  @spec available_trades(client(), String.t(), options()) :: response()
+  @spec available_trades(client(), String.t(), options()) :: response(any())
   def available_trades(client, location, opts \\ []) do
     SpaceTraders.available_trades(client, location)
       |> format(opts)
@@ -192,7 +192,7 @@ defmodule SpaceMongers do
 
   POST /users/:username/purchase-orders
   """
-  @spec buy_goods(client(), String.t(), String.t(), number(), options()) :: response()
+  @spec buy_goods(client(), String.t(), String.t(), number(), options()) :: response(any())
   def buy_goods(client, ship_id, good, quantity, opts \\ []) do
     SpaceTraders.buy_goods(client, ship_id, good, quantity)
       |> format(opts)
@@ -203,7 +203,7 @@ defmodule SpaceMongers do
 
   POST /users/:username/sell-orders
   """
-  @spec sell_goods(client(), String.t(), String.t(), number(), options()) :: response()
+  @spec sell_goods(client(), String.t(), String.t(), number(), options()) :: response(any())
   def sell_goods(client, ship_id, good, quantity, opts \\ []) do
     SpaceTraders.sell_goods(client, ship_id, good, quantity)
       |> format(opts)
