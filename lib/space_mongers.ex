@@ -89,10 +89,13 @@ defmodule SpaceMongers do
 
   GET /users/:username/loans
   """
-  @spec my_loans(client(), options()) :: response(any())
+  @spec my_loans(client(), options()) :: response(Models.OwnedLoan.t())
   def my_loans(client, opts \\ []) do
     SpaceTraders.my_loans(client)
-      |> format(fn env -> env.body["loans"] end, opts)
+      |> format(fn response ->
+        response.body["loans"]
+        |> Parsers.parse_list(&Parsers.parse_owned_loan/1)
+      end, opts)
   end
 
   @doc """

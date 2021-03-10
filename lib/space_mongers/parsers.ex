@@ -53,4 +53,15 @@ defmodule SpaceMongers.Parsers do
       total_volume: good["totalVolume"]
     }
   end
+
+  def parse_owned_loan(nil), do: nil
+  def parse_owned_loan(loan) when is_map(loan) do
+    %Models.OwnedLoan{
+      id: loan["id"],
+      repayment_amount: loan["repaymentAmount"],
+      due: loan["due"] |> parse_date(),
+      status: loan["status"],
+      type: loan["type"]
+    }
+  end
 end
