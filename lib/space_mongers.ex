@@ -53,10 +53,13 @@ defmodule SpaceMongers do
 
   GET /users/:username
   """
-  @spec current_user(client(), options()) :: response(any())
+  @spec current_user(client(), options()) :: response(Models.UserData.t())
   def current_user(client, opts \\ []) do
     SpaceTraders.current_user(client)
-      |> format(fn env -> env.body["user"] end, opts)
+      |> format(fn response ->
+        response.body["user"]
+          |> Parsers.parse_user_data()
+      end, opts)
   end
 
   @doc """
@@ -103,7 +106,7 @@ defmodule SpaceMongers do
 
   POST /users/:username/loans
   """
-  @spec buy_loan(client(), String.t(), options()) :: response(any())
+  @spec buy_loan(client(), String.t(), options()) :: response(Models.UserData.t())
   def buy_loan(client, type, opts \\ []) do
     SpaceTraders.buy_loan(client, type)
       |> format(fn response ->
