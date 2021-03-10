@@ -40,16 +40,7 @@ defmodule SpaceMongers do
     SpaceTraders.claim_username(username)
       |> format(fn response ->
         token = response.body["token"]
-        raw_user = response.body["user"]
-        user = %Models.User{
-          id: get_in(raw_user, ["id"]),
-          username: get_in(raw_user, ["username"]),
-          created_at: Parsers.parse_date(get_in(raw_user, ["createdAt"])),
-          updated_at: Parsers.parse_date(get_in(raw_user, ["updatedAt"])),
-          credits: get_in(raw_user, ["credits"]),
-          email: get_in(raw_user, ["email"]),
-          picture: get_in(raw_user, ["picture"])
-        }
+        user = response.body["user"] |> Parsers.parse_user()
         %Models.CreateUserResponse{
           token: token,
           user: user

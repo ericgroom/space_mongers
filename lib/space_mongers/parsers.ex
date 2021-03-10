@@ -13,6 +13,19 @@ defmodule SpaceMongers.Parsers do
     Enum.map(list, item_parser)
   end
 
+  def parse_user(nil), do: nil
+  def parse_user(user) when is_map(user) do
+    %Models.User{
+      id: user["id"],
+      username: user["username"],
+      created_at: user["createdAt"] |> parse_date(),
+      updated_at: user["updatedAt"] |> parse_date(),
+      credits: user["credits"],
+      email: user["email"],
+      picture: user["picture"]
+    }
+  end
+
   def parse_owned_ship(nil), do: nil
   def parse_owned_ship(ship) when is_map(ship) do
     %Models.OwnedShip{
