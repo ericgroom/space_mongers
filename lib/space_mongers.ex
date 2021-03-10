@@ -227,7 +227,10 @@ defmodule SpaceMongers do
   @spec available_trades(client(), String.t(), options()) :: response(any())
   def available_trades(client, location, opts \\ []) do
     SpaceTraders.available_trades(client, location)
-      |> format(opts)
+      |> format(fn response ->
+        get_in(response.body, ["planet", "marketplace"])
+          |> Parsers.parse_list(&Parsers.parse_marketplace_item/1)
+      end, opts)
   end
 
   @doc """

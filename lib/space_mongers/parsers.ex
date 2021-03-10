@@ -162,4 +162,14 @@ defmodule SpaceMongers.Parsers do
       total: order_item["total"]
     }
   end
+
+  def parse_marketplace_item(nil), do: nil
+  def parse_marketplace_item(marketplace_item) when is_map(marketplace_item) do
+    %Models.MarketplaceItem{
+      symbol: marketplace_item["symbol"],
+      price_per_unit: marketplace_item["pricePerUnit"],
+      volume_per_unit: marketplace_item["volumePerUnit"],
+      quantity_available: marketplace_item["quantityAvailable"]
+    }
+  end
 end
