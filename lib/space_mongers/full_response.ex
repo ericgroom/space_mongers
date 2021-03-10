@@ -1,7 +1,7 @@
 defmodule SpaceMongers.FullResponse do
   @moduledoc """
   By default SpaceMongers does some formatting and deserialization, you can access the full
-  response for a particular function by passing the keyword argument `include_full_response: true`.
+  response for a particular request by passing the keyword argument `skip_deserialization: true`.
   """
   @type t() :: %SpaceMongers.FullResponse{method: atom(), status: number(), url: String.t(), headers: list(), body: map()}
 
