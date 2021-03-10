@@ -107,4 +107,15 @@ defmodule SpaceMongers.Parsers do
       price: location["price"]
     }
   end
+
+  def parse_location(nil), do: nil
+  def parse_location(location) when is_map(location) do
+    %Models.Location{
+      name: location["name"],
+      symbol: location["symbol"],
+      type: location["type"],
+      x: location["x"],
+      y: location["y"]
+    }
+  end
 end

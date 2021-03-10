@@ -164,10 +164,13 @@ defmodule SpaceMongers do
 
   GET /game/locations/:symbol
   """
-  @spec location_info(client(), String.t(), options()) :: response(any())
+  @spec location_info(client(), String.t(), options()) :: response(Models.Location.t())
   def location_info(client, symbol, opts \\ []) do
     SpaceTraders.location_info(client, symbol)
-      |> format(opts)
+      |> format(fn response ->
+        response.body["planet"]
+          |> Parsers.parse_location()
+      end, opts)
   end
 
   @doc """
