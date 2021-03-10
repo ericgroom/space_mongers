@@ -5,6 +5,7 @@
 Features:
 * Covers all endpoints
 * Automatic rate limiting to avoid overloading the servers and getting banned
+* Fields deserialized into native types
 
 ## Installation
 
@@ -25,7 +26,7 @@ end
 For most requests, you will need an authenticated client which requires you to pass a username and token. You can claim a username and token with the following code:
 
 ```elixir
-{:ok, %{"user" => %{"username" => username}, "token" => token}} = SpaceMongers.claim_username("my_username")
+{:ok, %{user: %{username: username}, token: token}} = SpaceMongers.claim_username("my_username")
 ```
 
 ### Creating a client
@@ -38,13 +39,13 @@ client = SpaceMongers.ApiClient.new(username, token)
 
 ### Making requests
 
-A variety of requests can be found in the root `SpaceMongers` module. These all require having an authenticated API client. These requests generally come back in the form of `{:ok, response}` or `{:error, reason}`, however you can also pass an option `include_full_response: true` to any request in order to get the full response in case you have a more advanced use case. If `include_full_response` is set to `true`, responses will instead be in the form `{:ok, response, full_response}` or `{:error, reason, full_response}`.
+A variety of requests can be found in the root `SpaceMongers` module. These mostly require having an authenticated API client as the first argument. 
 
 #### Examples
 
 Get the status of the servers:
 ```elixir
-> SpaceMongers.status(client)
+> SpaceMongers.status()
 
 {:ok, "spacetraders is currently online and available to play"}
 ```
@@ -53,34 +54,42 @@ View your user:
 ```elixir
 > SpaceMongers.current_user(client)
 
-{:ok,
- %{
-   "credits" => 7960,
-   "loans" => [
-     %{
-       "due" => "2021-03-05T17:04:42.271Z",
-       "id" => "cklv4cw0x1132868589qrmzz74n",
-       "repaymentAmount" => 10725,
-       "status" => "CURRENT",
-       "type" => "STARTUP"
+ {:ok,
+ %SpaceMongers.Models.UserData{
+   credits: 106229,
+   loans: [
+     %SpaceMongers.Models.OwnedLoan{
+       due: ~U[2021-03-10 17:06:49.801Z],
+       id: "ckm0u713e104098v3890qzwcfrp",
+       repayment_amount: 280000,
+       status: "CURRENT",
+       type: "STARTUP"
      }
    ],
-   "ships" => [
-     %{
-       "cargo" => [%{"good" => "FUEL", "quantity" => 1}],
-       "class" => "MK-I",
-       "id" => "cklvqz89q562433dn896irsu0wi",
-       "location" => "OE-D2",
-       "manufacturer" => "Jackshaw",
-       "maxCargo" => 100,
-       "plating" => 5,
-       "spaceAvailable" => 99,
-       "speed" => 2,
-       "type" => "JW-MK-I",
-       "weapons" => 5
+   ships: [
+     %SpaceMongers.Models.OwnedShip{
+       cargo: [
+         %SpaceMongers.Models.OwnedShip.ContainedGood{
+           good: "FUEL",
+           quantity: 43,
+           total_volume: 43
+         }
+       ],
+       class: "MK-I",
+       id: "ckm0ud8bj107610v389eljwsx9d",
+       location: "OE-PM",
+       manufacturer: "Jackshaw",
+       max_cargo: 100,
+       plating: 5,
+       space_available: 57,
+       speed: 2,
+       type: "JW-MK-I",
+       weapons: 5,
+       x: 20,
+       y: -25
      }
    ],
-   "username" => "my_username"
+   username: "my_username"
  }}
 ```
 

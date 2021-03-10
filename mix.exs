@@ -44,13 +44,28 @@ defmodule SpaceMongers.MixProject do
   defp docs do
     [
       main: "readme",
-      extras: extras()
+      extras: extras(),
+      extra_section: "GUIDES",
+      groups_for_extras: groups_for_extras(),
+      groups_for_modules: groups_for_modules()
     ]
   end
 
   defp extras do
     [
       "README.md"
+    ]
+  end
+
+  defp groups_for_extras do
+    [Introduction: "README.md"]
+  end
+
+  defp groups_for_modules do
+    [
+      Models: [
+        ~r/SpaceMongers\.Models\.*+/
+      ]
     ]
   end
 end

@@ -1,4 +1,6 @@
 defmodule SpaceMongers.Parsers do
+  @moduledoc false
+
   alias SpaceMongers.Models
   def parse_date(nil), do: nil
   def parse_date(iso_str) when is_binary(iso_str) do
