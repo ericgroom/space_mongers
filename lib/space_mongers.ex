@@ -81,7 +81,7 @@ defmodule SpaceMongers do
 
   GET /game/loans
   """
-  @spec loans(client(), options()) :: response(Models.AvailableLoan.t())
+  @spec loans(client(), options()) :: response([Models.AvailableLoan.t()])
   def loans(client, opts \\ []) do
     SpaceTraders.loans(client)
       |> format(fn response ->
@@ -95,7 +95,7 @@ defmodule SpaceMongers do
 
   GET /users/:username/loans
   """
-  @spec my_loans(client(), options()) :: response(Models.OwnedLoan.t())
+  @spec my_loans(client(), options()) :: response([Models.OwnedLoan.t()])
   def my_loans(client, opts \\ []) do
     SpaceTraders.my_loans(client)
       |> format(fn response ->
@@ -123,10 +123,13 @@ defmodule SpaceMongers do
 
   GET /game/ships
   """
-  @spec ships(client(), String.t() | nil, options()) :: response(any())
+  @spec ships(client(), String.t() | nil, options()) :: response([Models.AvailableShip.t()])
   def ships(client, class \\ nil, opts \\ []) do
     SpaceTraders.ships(client, class)
-      |> format(fn env -> env.body["ships"] end, opts)
+      |> format(fn response ->
+        response.body["ships"]
+          |> Parsers.parse_list(&Parsers.parse_available_ship/1)
+      end, opts)
   end
 
   @doc """

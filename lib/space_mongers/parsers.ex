@@ -66,7 +66,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_available_loan(nil), do: nil
-  def parse_available_loan(loan) do
+  def parse_available_loan(loan) when is_map(loan) do
     %Models.AvailableLoan{
       amount: loan["amount"],
       type: loan["type"],
@@ -83,6 +83,28 @@ defmodule SpaceMongers.Parsers do
       credits: user_data["credits"],
       loans: user_data["loans"] |> parse_list(&parse_owned_loan/1),
       ships: user_data["ships"] |> parse_list(&parse_owned_ship/1)
+    }
+  end
+
+  def parse_available_ship(nil), do: nil
+  def parse_available_ship(ship) when is_map(ship) do
+    %Models.AvailableShip{
+      class: ship["class"],
+      type: ship["type"],
+      manufacturer: ship["manufacturer"],
+      max_cargo: ship["maxCargo"],
+      speed: ship["speed"],
+      weapons: ship["weapons"],
+      plating: ship["plating"],
+      purchase_locations: ship["purchaseLocations"] |> parse_list(&parse_purchase_location/1)
+    }
+  end
+
+  defp parse_purchase_location(nil), do: nil
+  defp parse_purchase_location(location) when is_map(location) do
+    %{
+      location: location["location"],
+      price: location["price"]
     }
   end
 end
