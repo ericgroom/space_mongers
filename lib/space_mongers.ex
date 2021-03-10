@@ -35,13 +35,13 @@ defmodule SpaceMongers do
 
   POST /users/:username/token
   """
-  @spec claim_username(String.t(), options()) :: response(Models.CreateUserResponse.t())
+  @spec claim_username(String.t(), options()) :: response(%{token: String.t(), user: Models.User.t()})
   def claim_username(username, opts \\ []) do
     SpaceTraders.claim_username(username)
       |> format(fn response ->
         token = response.body["token"]
         user = response.body["user"] |> Parsers.parse_user()
-        %Models.CreateUserResponse{
+        %{
           token: token,
           user: user
         }
