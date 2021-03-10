@@ -153,7 +153,7 @@ defmodule SpaceMongers do
 
   GET /game/systems
   """
-  @spec systems(client(), options()) :: response(any())
+  @spec systems(client(), options()) :: response([Models.System.t()])
   def systems(client, opts \\ []) do
     SpaceTraders.systems(client)
       |> format(fn response ->
@@ -224,12 +224,12 @@ defmodule SpaceMongers do
 
   GET /game/locations/:location/marketplace
   """
-  @spec available_trades(client(), String.t(), options()) :: response(any())
+  @spec available_trades(client(), String.t(), options()) :: response([Models.MarketplaceItem.t()])
   def available_trades(client, location, opts \\ []) do
     SpaceTraders.available_trades(client, location)
       |> format(fn response ->
         get_in(response.body, ["planet", "marketplace"])
-          |> Parsers.parse_list(&Parsers.parse_marketplace_item/1)
+        |> Parsers.parse_list(&Parsers.parse_marketplace_item/1)
       end, opts)
   end
 
@@ -238,7 +238,7 @@ defmodule SpaceMongers do
 
   POST /users/:username/purchase-orders
   """
-  @spec buy_goods(client(), String.t(), String.t(), number(), options()) :: response(any())
+  @spec buy_goods(client(), String.t(), String.t(), number(), options()) :: response(Models.Order.t())
   def buy_goods(client, ship_id, good, quantity, opts \\ []) do
     SpaceTraders.buy_goods(client, ship_id, good, quantity)
       |> format(fn response ->
@@ -252,17 +252,13 @@ defmodule SpaceMongers do
 
   POST /users/:username/sell-orders
   """
-  @spec sell_goods(client(), String.t(), String.t(), number(), options()) :: response(any())
+  @spec sell_goods(client(), String.t(), String.t(), number(), options()) :: response(Models.Order.t())
   def sell_goods(client, ship_id, good, quantity, opts \\ []) do
     SpaceTraders.sell_goods(client, ship_id, good, quantity)
       |> format(fn response ->
         response.body
           |> Parsers.parse_order()
       end, opts)
-  end
-
-  defp format(result, opts) do
-    format(result, fn env -> env.body end, opts)
   end
 
   defp format(result, extract_success, opts)  do
