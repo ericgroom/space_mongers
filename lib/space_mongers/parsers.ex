@@ -2,8 +2,8 @@ defmodule SpaceMongers.Parsers do
   alias SpaceMongers.Models
   def parse_date(nil), do: nil
   def parse_date(iso_str) when is_binary(iso_str) do
-    case NaiveDateTime.from_iso8601(iso_str) do
-      {:ok, datetime} -> datetime
+    case DateTime.from_iso8601(iso_str) do
+      {:ok, datetime, _offset} -> datetime
       {:error, _reason} -> iso_str
     end
   end

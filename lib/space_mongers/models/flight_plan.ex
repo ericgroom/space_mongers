@@ -9,8 +9,8 @@ defmodule SpaceMongers.Models.FlightPlan do
     distance: integer(),
     fuel_consumed: integer(),
     fuel_remaining: integer(),
-    arrives_at: NaiveDateTime.t(),
+    arrives_at: DateTime.t(),
     time_remaining_in_seconds: integer(),
-    terminated_at: NaiveDateTime.t()
+    terminated_at: DateTime.t()
   }
 end

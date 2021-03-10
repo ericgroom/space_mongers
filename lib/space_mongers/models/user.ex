@@ -4,8 +4,8 @@ defmodule SpaceMongers.Models.User do
   @type t() :: %__MODULE__{
     id: binary(),
     username: String.t(),
-    created_at: NaiveDateTime.t(),
-    updated_at: NaiveDateTime.t(),
+    created_at: DateTime.t(),
+    updated_at: DateTime.t(),
     credits: integer(),
     email: String.t(),
     picture: any(),
