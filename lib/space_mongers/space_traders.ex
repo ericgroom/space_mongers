@@ -6,8 +6,8 @@ defmodule SpaceMongers.SpaceTraders do
 
   @type response() :: {:ok, FullResponse.t()} | {:error, any()}
 
-  @callback status(ApiClient.t()) :: response()
-  def status(client), do: @delegate.status(client)
+  @callback status() :: response()
+  def status(), do: @delegate.status()
 
   @callback claim_username(String.t()) :: response()
   def claim_username(username), do: @delegate.claim_username(username)

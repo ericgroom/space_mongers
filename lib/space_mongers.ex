@@ -22,11 +22,10 @@ defmodule SpaceMongers do
 
   GET /game/status
   """
-  @spec status(client(), options()) :: response(String.t())
-  def status(client, opts \\ []) do
-    # TODO just use unauthenticated client
-    SpaceTraders.status(client)
-    |> format_response(fn env -> env.body["status"] end, opts)
+  @spec status(options()) :: response(String.t())
+  def status(opts \\ []) do
+    SpaceTraders.status()
+      |> format_response(fn env -> env.body["status"] end, opts)
   end
 
   @doc """

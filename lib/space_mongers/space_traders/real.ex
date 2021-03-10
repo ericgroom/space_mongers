@@ -14,10 +14,9 @@ defmodule SpaceMongers.SpaceTraders.Real do
         |> convert_response()
     end
   end
-  def status(client) do
-    # TODO just use unauthenticated client
+  def status() do
     exec do
-      Tesla.get(client, "/game/status")
+      UnauthenticatedApiClient.get("/game/status")
     end
   end
 
