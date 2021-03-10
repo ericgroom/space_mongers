@@ -179,10 +179,13 @@ defmodule SpaceMongers do
 
   GET /game/systems/:system/locations
   """
-  @spec locations(client(), String.t() | nil, String.t(), options()) :: response(any())
+  @spec locations(client(), String.t() | nil, String.t(), options()) :: response([Models.Location.t()])
   def locations(client, location_type \\ nil, system \\ @default_system, opts \\ []) do
     SpaceTraders.locations(client, system, location_type)
-      |> format(fn env -> env.body["locations"] end, opts)
+      |> format(fn response ->
+        response.body["locations"]
+          |> Parsers.parse_list(&Parsers.parse_location/1)
+      end, opts)
   end
 
   @doc """
