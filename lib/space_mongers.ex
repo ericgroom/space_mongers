@@ -15,7 +15,6 @@ defmodule SpaceMongers do
   @type options() :: [include_full_response: boolean()]
 
   @default_system "OE"
-  @default_cost 5
 
   @doc """
   Get the status of the spacetraders.io servers
