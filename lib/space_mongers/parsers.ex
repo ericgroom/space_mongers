@@ -64,4 +64,14 @@ defmodule SpaceMongers.Parsers do
       type: loan["type"]
     }
   end
+
+  def parse_user_data(nil), do: nil
+  def parse_user_data(user_data) when is_map(user_data) do
+    %Models.UserData{
+      username: user_data["username"],
+      credits: user_data["credits"],
+      loans: user_data["loans"] |> parse_list(&parse_owned_loan/1),
+      ships: user_data["ships"] |> parse_list(&parse_owned_ship/1)
+    }
+  end
 end

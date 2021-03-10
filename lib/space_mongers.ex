@@ -106,7 +106,10 @@ defmodule SpaceMongers do
   @spec buy_loan(client(), String.t(), options()) :: response(any())
   def buy_loan(client, type, opts \\ []) do
     SpaceTraders.buy_loan(client, type)
-      |> format(opts)
+      |> format(fn response ->
+        response.body["user"]
+          |> Parsers.parse_user_data()
+      end, opts)
   end
 
   @doc """
