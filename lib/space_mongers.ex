@@ -8,7 +8,7 @@ defmodule SpaceMongers do
   All function calls here are automatically rate-limited to avoid overloading the servers and getting your user
   banned. Right now the rate limiting is quite agressive so expect SpaceMongers to become more efficient in the future.
   """
-  alias SpaceMongers.{ApiClient, FullResponse, SpaceTraders}
+  alias SpaceMongers.{ApiClient, FullResponse, SpaceTraders, Models, Parsers}
 
   @type client() :: ApiClient.t()
   @type response(t) :: {:ok, t} | {:error, any()} | {:ok, t, FullResponse.t()} | {:error, any(), FullResponse.t()}
@@ -35,10 +35,26 @@ defmodule SpaceMongers do
 
   POST /users/:username/token
   """
-  @spec claim_username(String.t(), options()) :: response(any())
+  @spec claim_username(String.t(), options()) :: response(Models.CreateUserResponse.t())
   def claim_username(username, opts \\ []) do
     SpaceTraders.claim_username(username)
-      |> format(opts)
+      |> format(fn response ->
+        token = response.body["token"]
+        raw_user = response.body["user"]
+        user = %Models.User{
+          id: get_in(raw_user, ["id"]),
+          username: get_in(raw_user, ["username"]),
+          created_at: Parsers.parse_date(get_in(raw_user, ["createdAt"])),
+          updated_at: Parsers.parse_date(get_in(raw_user, ["updatedAt"])),
+          credits: get_in(raw_user, ["credits"]),
+          email: get_in(raw_user, ["email"]),
+          picture: get_in(raw_user, ["picture"])
+        }
+        %Models.CreateUserResponse{
+          token: token,
+          user: user
+        }
+      end, opts)
   end
 
   @doc """
