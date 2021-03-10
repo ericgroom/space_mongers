@@ -127,4 +127,20 @@ defmodule SpaceMongers.Parsers do
       locations: system["locations"] |> parse_list(&parse_location/1)
     }
   end
+
+  def parse_flight_plan(nil), do: nil
+  def parse_flight_plan(flight_plan) when is_map(flight_plan) do
+    %Models.FlightPlan{
+      id: flight_plan["id"],
+      ship: flight_plan["ship"],
+      destination: flight_plan["destination"],
+      departure: flight_plan["departure"],
+      distance: flight_plan["distance"],
+      fuel_consumed: flight_plan["fuelConsumed"],
+      fuel_remaining: flight_plan["fuelRemaining"],
+      arrives_at: flight_plan["arrivesAt"] |> parse_date(),
+      time_remaining_in_seconds: flight_plan["timeRemainingInSeconds"],
+      terminated_at: flight_plan["terminatedAt"] |> parse_date()
+    }
+  end
 end

@@ -196,10 +196,13 @@ defmodule SpaceMongers do
 
   POST /users/:username/flight-plans
   """
-  @spec create_flight_plan(client(), String.t(), String.t(), options()) :: response(any())
+  @spec create_flight_plan(client(), String.t(), String.t(), options()) :: response(Models.FlightPlan.t())
   def create_flight_plan(client, ship_id, destination, opts \\ []) do
     SpaceTraders.create_flight_plan(client, ship_id, destination)
-      |> format(opts)
+      |> format(fn response ->
+        response.body["flightPlan"]
+          |> Parsers.parse_flight_plan()
+      end, opts)
   end
 
   @doc """
@@ -207,10 +210,13 @@ defmodule SpaceMongers do
 
   GET /users/:username/flight-plans/:id
   """
-  @spec view_flight_plan(client(), String.t(), options()) :: response(any())
+  @spec view_flight_plan(client(), String.t(), options()) :: response(Models.FlightPlan.t())
   def view_flight_plan(client, flight_plan_id, opts \\ []) do
     SpaceTraders.view_flight_plan(client, flight_plan_id)
-      |> format(opts)
+      |> format(fn response ->
+        response.body["flightPlan"]
+          |> Parsers.parse_flight_plan()
+      end, opts)
   end
 
   @doc """
