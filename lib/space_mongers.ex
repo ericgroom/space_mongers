@@ -73,10 +73,13 @@ defmodule SpaceMongers do
 
   GET /users/:username/ships
   """
-  @spec my_ships(client(), options()) :: response(any())
+  @spec my_ships(client(), options()) :: response([Models.OwnedShip.t()])
   def my_ships(client, opts \\ []) do
     SpaceTraders.my_ships(client)
-      |> format(fn env -> env.body["ships"] end, opts)
+      |> format(fn response ->
+        response.body["ships"]
+          |> Parsers.parse_list(&Parsers.parse_owned_ship/1)
+      end, opts)
   end
 
   @doc """
