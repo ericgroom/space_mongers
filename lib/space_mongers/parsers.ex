@@ -143,4 +143,23 @@ defmodule SpaceMongers.Parsers do
       terminated_at: flight_plan["terminatedAt"] |> parse_date()
     }
   end
+
+  def parse_order(nil), do: nil
+  def parse_order(order) when is_map(order) do
+    %Models.Order{
+      credits: order["credits"],
+      order: order["order"] |> parse_list(&parse_order_item/1),
+      ship: order["ship"] |> parse_owned_ship()
+    }
+  end
+
+  defp parse_order_item(nil), do: nil
+  defp parse_order_item(order_item) when is_map(order_item) do
+    %Models.Order.OrderItem{
+      good: order_item["good"],
+      price_per_unit: order_item["pricePerUnit"],
+      quantity: order_item["quantity"],
+      total: order_item["total"]
+    }
+  end
 end

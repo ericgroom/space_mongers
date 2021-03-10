@@ -238,7 +238,10 @@ defmodule SpaceMongers do
   @spec buy_goods(client(), String.t(), String.t(), number(), options()) :: response(any())
   def buy_goods(client, ship_id, good, quantity, opts \\ []) do
     SpaceTraders.buy_goods(client, ship_id, good, quantity)
-      |> format(opts)
+      |> format(fn response ->
+        response.body
+          |> Parsers.parse_order()
+      end, opts)
   end
 
   @doc """
@@ -249,7 +252,10 @@ defmodule SpaceMongers do
   @spec sell_goods(client(), String.t(), String.t(), number(), options()) :: response(any())
   def sell_goods(client, ship_id, good, quantity, opts \\ []) do
     SpaceTraders.sell_goods(client, ship_id, good, quantity)
-      |> format(opts)
+      |> format(fn response ->
+        response.body
+          |> Parsers.parse_order()
+      end, opts)
   end
 
   defp format(result, opts) do
