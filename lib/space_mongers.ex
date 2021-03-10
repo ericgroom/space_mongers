@@ -156,7 +156,10 @@ defmodule SpaceMongers do
   @spec systems(client(), options()) :: response(any())
   def systems(client, opts \\ []) do
     SpaceTraders.systems(client)
-      |> format(fn env -> env.body["systems"] end, opts)
+      |> format(fn response ->
+        response.body["systems"]
+          |> Parsers.parse_list(&Parsers.parse_system/1)
+      end, opts)
   end
 
   @doc """

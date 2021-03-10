@@ -118,4 +118,13 @@ defmodule SpaceMongers.Parsers do
       y: location["y"]
     }
   end
+
+  def parse_system(nil), do: nil
+  def parse_system(system) when is_map(system) do
+    %Models.System{
+      name: system["name"],
+      symbol: system["symbol"],
+      locations: system["locations"] |> parse_list(&parse_location/1)
+    }
+  end
 end
