@@ -81,10 +81,13 @@ defmodule SpaceMongers do
 
   GET /game/loans
   """
-  @spec loans(client(), options()) :: response(any())
+  @spec loans(client(), options()) :: response(Models.AvailableLoan.t())
   def loans(client, opts \\ []) do
     SpaceTraders.loans(client)
-      |> format(fn env -> env.body["loans"] end, opts)
+      |> format(fn response ->
+        response.body["loans"]
+          |> Parsers.parse_list(&Parsers.parse_available_loan/1)
+      end, opts)
   end
 
   @doc """

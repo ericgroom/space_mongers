@@ -65,6 +65,17 @@ defmodule SpaceMongers.Parsers do
     }
   end
 
+  def parse_available_loan(nil), do: nil
+  def parse_available_loan(loan) do
+    %Models.AvailableLoan{
+      amount: loan["amount"],
+      type: loan["type"],
+      rate: loan["rate"],
+      term_in_days: loan["termInDays"],
+      collateral_required: loan["collateralRequired"]
+    }
+  end
+
   def parse_user_data(nil), do: nil
   def parse_user_data(user_data) when is_map(user_data) do
     %Models.UserData{
