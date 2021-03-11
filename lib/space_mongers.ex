@@ -220,6 +220,20 @@ defmodule SpaceMongers do
   end
 
   @doc """
+  Get all flight plans within a system, including other users. System defaults to OE if not passed.
+
+  GET /game/systems/:system/flight-plans
+  """
+  @spec flight_plans(client(), String.t() | nil, options()) :: response([Models.PublicFlightPlan.t()])
+  def flight_plans(client, system \\ @default_system, opts \\ []) do
+    SpaceTraders.flight_plans(client, system)
+      |> format_response(fn response ->
+        response.body["flightPlans"]
+          |> Parsers.parse_list(&Parsers.parse_public_flight_plan/1)
+      end, opts)
+  end
+
+  @doc """
   Lists available trades for a particular location
 
   GET /game/locations/:location/marketplace

@@ -98,6 +98,12 @@ defmodule SpaceMongers.SpaceTraders.Real do
     end
   end
 
+  def flight_plans(client, system) do
+    exec do
+      Tesla.get(client, "/game/systems/" <> system <> "/flight-plans")
+    end
+  end
+
   def available_trades(client, location) do
     exec do
       Tesla.get(client, "/game/locations/" <> location <> "/marketplace")
