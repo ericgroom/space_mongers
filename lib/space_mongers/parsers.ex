@@ -26,6 +26,7 @@ defmodule SpaceMongers.Parsers do
       email: user["email"],
       picture: user["picture"]
     }
+    |> with_extra_fields(user)
   end
 
   def parse_owned_ship(nil), do: nil
@@ -45,6 +46,7 @@ defmodule SpaceMongers.Parsers do
       weapons: ship["weapons"],
       plating: ship["plating"]
     }
+    |> with_extra_fields(ship)
   end
 
   defp parse_contained_good(nil), do: nil
@@ -54,6 +56,7 @@ defmodule SpaceMongers.Parsers do
       quantity: good["quantity"],
       total_volume: good["totalVolume"]
     }
+    |> with_extra_fields(good)
   end
 
   def parse_owned_loan(nil), do: nil
@@ -65,6 +68,7 @@ defmodule SpaceMongers.Parsers do
       status: loan["status"],
       type: loan["type"]
     }
+    |> with_extra_fields(loan)
   end
 
   def parse_available_loan(nil), do: nil
@@ -76,6 +80,7 @@ defmodule SpaceMongers.Parsers do
       term_in_days: loan["termInDays"],
       collateral_required: loan["collateralRequired"]
     }
+    |> with_extra_fields(loan)
   end
 
   def parse_user_data(nil), do: nil
@@ -86,6 +91,7 @@ defmodule SpaceMongers.Parsers do
       loans: user_data["loans"] |> parse_list(&parse_owned_loan/1),
       ships: user_data["ships"] |> parse_list(&parse_owned_ship/1)
     }
+    |> with_extra_fields(user_data)
   end
 
   def parse_available_ship(nil), do: nil
@@ -100,6 +106,7 @@ defmodule SpaceMongers.Parsers do
       plating: ship["plating"],
       purchase_locations: ship["purchaseLocations"] |> parse_list(&parse_purchase_location/1)
     }
+    |> with_extra_fields(ship)
   end
 
   defp parse_purchase_location(nil), do: nil
@@ -129,6 +136,7 @@ defmodule SpaceMongers.Parsers do
       symbol: system["symbol"],
       locations: system["locations"] |> parse_list(&parse_location/1)
     }
+    |> with_extra_fields(system)
   end
 
   def parse_flight_plan(nil), do: nil
@@ -145,6 +153,7 @@ defmodule SpaceMongers.Parsers do
       time_remaining_in_seconds: flight_plan["timeRemainingInSeconds"],
       terminated_at: flight_plan["terminatedAt"] |> parse_date()
     }
+    |> with_extra_fields(flight_plan)
   end
 
   def parse_public_flight_plan(nil), do: nil
@@ -158,6 +167,7 @@ defmodule SpaceMongers.Parsers do
       arrives_at: flight_plan["arrivesAt"] |> parse_date(),
       ship_type: flight_plan["shipType"]
     }
+    |>  with_extra_fields(flight_plan)
   end
 
   def parse_order(nil), do: nil
@@ -167,6 +177,7 @@ defmodule SpaceMongers.Parsers do
       order: order["order"] |> parse_list(&parse_order_item/1),
       ship: order["ship"] |> parse_owned_ship()
     }
+    |> with_extra_fields(order)
   end
 
   defp parse_order_item(nil), do: nil
@@ -177,6 +188,7 @@ defmodule SpaceMongers.Parsers do
       quantity: order_item["quantity"],
       total: order_item["total"]
     }
+    |> with_extra_fields(order_item)
   end
 
   def parse_marketplace_item(nil), do: nil
@@ -187,6 +199,7 @@ defmodule SpaceMongers.Parsers do
       volume_per_unit: marketplace_item["volumePerUnit"],
       quantity_available: marketplace_item["quantityAvailable"]
     }
+    |> with_extra_fields(marketplace_item)
   end
 
   def with_extra_fields(model, map) do

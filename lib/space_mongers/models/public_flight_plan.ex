@@ -1,5 +1,5 @@
 defmodule SpaceMongers.Models.PublicFlightPlan do
-  defstruct [:id, :username, :to, :from, :created_at, :arrives_at, :ship_type]
+  defstruct [:id, :username, :to, :from, :created_at, :arrives_at, :ship_type, :extra_fields]
 
   @type t() :: %__MODULE__{
     id: String.t(),
@@ -8,6 +8,7 @@ defmodule SpaceMongers.Models.PublicFlightPlan do
     from: String.t(),
     created_at: DateTime.t(),
     arrives_at: DateTime.t(),
-    ship_type: String.t()
+    ship_type: String.t(),
+    extra_fields: map()
   }
 end
