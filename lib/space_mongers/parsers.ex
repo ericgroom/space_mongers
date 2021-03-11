@@ -119,6 +119,7 @@ defmodule SpaceMongers.Parsers do
       x: location["x"],
       y: location["y"]
     }
+    |> with_extra_fields(location)
   end
 
   def parse_system(nil), do: nil
@@ -186,5 +187,23 @@ defmodule SpaceMongers.Parsers do
       volume_per_unit: marketplace_item["volumePerUnit"],
       quantity_available: marketplace_item["quantityAvailable"]
     }
+  end
+
+  def with_extra_fields(model, map) do
+    known_keys = camelcase_keys_from_struct(model.__struct__)
+    {_, extra} = Map.split(map, known_keys)
+    %{model | extra_fields: extra }
+  end
+
+  def camelcase_keys_from_struct(struct_module) do
+    struct_module.__struct__()
+      |> Map.keys()
+      |> Stream.reject(fn key -> key in [:__struct__, :extra_fields] end)
+      |> Stream.map(&Atom.to_string/1)
+      |> Enum.map(fn str ->
+        [first | rest] = str |> String.split("_")
+        [first | Enum.map(rest, &String.capitalize/1)]
+          |> Enum.join()
+      end)
   end
 end
