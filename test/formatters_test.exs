@@ -65,7 +65,7 @@ defmodule SpaceMongers.FormattersTest do
 
     test "errors with a reason other than FullResponse.t() return the reason" do
       result = format_response(@nonhttp_error, fn _resp -> raise "shouldn't be called" end, [])
-      assert {:error, "reason"}
+      assert {:error, "reason"} == result
     end
   end
 end
