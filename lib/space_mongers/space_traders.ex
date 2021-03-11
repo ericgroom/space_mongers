@@ -48,6 +48,9 @@ defmodule SpaceMongers.SpaceTraders do
   @callback view_flight_plan(ApiClient.t(), String.t()) :: response()
   def view_flight_plan(client, flight_plan_id), do: @delegate.view_flight_plan(client, flight_plan_id)
 
+  @callback flight_plans(ApiClient.t(), String.t()) :: response()
+  def flight_plans(client, system), do: @delegate.flight_plans(client, system)
+
   @callback available_trades(ApiClient.t(), String.t()) :: response()
   def available_trades(client, location), do: @delegate.available_trades(client, location)
 

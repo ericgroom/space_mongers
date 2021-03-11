@@ -146,6 +146,19 @@ defmodule SpaceMongers.Parsers do
     }
   end
 
+  def parse_public_flight_plan(nil), do: nil
+  def parse_public_flight_plan(flight_plan) when is_map(flight_plan) do
+    %Models.PublicFlightPlan{
+      id: flight_plan["id"],
+      username: flight_plan["username"],
+      to: flight_plan["to"],
+      from: flight_plan["from"],
+      created_at: flight_plan["createdAt"] |> parse_date(),
+      arrives_at: flight_plan["arrivesAt"] |> parse_date(),
+      ship_type: flight_plan["shipType"]
+    }
+  end
+
   def parse_order(nil), do: nil
   def parse_order(order) when is_map(order) do
     %Models.Order{
