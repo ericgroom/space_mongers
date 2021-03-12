@@ -1,4 +1,7 @@
 defmodule SpaceMongers.Models.MarketplaceItem do
+  @moduledoc """
+  Represents an item sold at a location's marketplace.
+  """
   use SpaceMongers.Model,
     symbol: String.t(),
     price_per_unit: integer(),

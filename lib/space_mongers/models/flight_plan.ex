@@ -1,4 +1,7 @@
 defmodule SpaceMongers.Models.FlightPlan do
+  @moduledoc """
+  Represents a flight plan.
+  """
   use SpaceMongers.Model,
     id: String.t(),
     ship: String.t(),

@@ -1,4 +1,7 @@
 defmodule SpaceMongers.Models.AvailableShip do
+  @moduledoc """
+  Represents a ship available for purchase.
+  """
   use SpaceMongers.Model,
     class: String.t(),
     type: String.t(),
