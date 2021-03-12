@@ -4,43 +4,57 @@ defmodule SpaceMongers.FormattersTest do
   import SpaceMongers.Formatters
   alias SpaceMongers.FullResponse
 
-  @success {:ok, %FullResponse{
-    status: 200,
-    body: %{success: true}
-  }}
+  @success {:ok,
+            %FullResponse{
+              status: 200,
+              body: %{success: true}
+            }}
 
-  @failure {:error, %FullResponse{
-    status: 400,
-    body: %{"error" => %{"message" => "invalid"}}
-  }}
+  @failure {:error,
+            %FullResponse{
+              status: 400,
+              body: %{"error" => %{"message" => "invalid"}}
+            }}
 
-  @status_failure {:ok, %FullResponse{
-    status: 400,
-    body: %{"error" => %{"message" => "invalid"}}
-  }}
+  @status_failure {:ok,
+                   %FullResponse{
+                     status: 400,
+                     body: %{"error" => %{"message" => "invalid"}}
+                   }}
 
-  @nonstandard_body_failure {:ok, %FullResponse{
-    status: 500,
-    body: %{"unknown" => "value"}
-  }}
+  @nonstandard_body_failure {:ok,
+                             %FullResponse{
+                               status: 500,
+                               body: %{"unknown" => "value"}
+                             }}
 
   @nonhttp_error {:error, "reason"}
 
   describe "format_response/3" do
     test "doesn't process sucesss response when skip_deserialization is passed" do
-      result = format_response(@success, fn _resp -> raise "shouldn't be called" end, [skip_deserialization: true])
-      assert {:ok, %FullResponse{
-        status: 200,
-        body: %{success: true}
-      }} == result
+      result =
+        format_response(@success, fn _resp -> raise "shouldn't be called" end,
+          skip_deserialization: true
+        )
+
+      assert {:ok,
+              %FullResponse{
+                status: 200,
+                body: %{success: true}
+              }} == result
     end
 
     test "doesn't process error response when skip_deserialization is passed" do
-      result = format_response(@failure, fn _resp -> raise "shouldn't be called" end, [skip_deserialization: true])
-      assert {:error, %FullResponse{
-        status: 400,
-        body: %{"error" => %{"message" => "invalid"}}
-      }} == result
+      result =
+        format_response(@failure, fn _resp -> raise "shouldn't be called" end,
+          skip_deserialization: true
+        )
+
+      assert {:error,
+              %FullResponse{
+                status: 400,
+                body: %{"error" => %{"message" => "invalid"}}
+              }} == result
     end
 
     test "processes success response when skip_deserialization is not passed" do
@@ -59,7 +73,13 @@ defmodule SpaceMongers.FormattersTest do
     end
 
     test "error responses with non-standard body return entire body" do
-      result = format_response(@nonstandard_body_failure, fn _resp -> raise "shouldn't be called" end, [])
+      result =
+        format_response(
+          @nonstandard_body_failure,
+          fn _resp -> raise "shouldn't be called" end,
+          []
+        )
+
       assert {:error, %{"unknown" => "value"}} == result
     end
 

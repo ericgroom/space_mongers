@@ -1,5 +1,5 @@
 defmodule SpaceMongers.Models.PublicFlightPlan do
-  use SpaceMongers.Model, [
+  use SpaceMongers.Model,
     id: String.t(),
     username: String.t(),
     to: String.t(),
@@ -8,5 +8,4 @@ defmodule SpaceMongers.Models.PublicFlightPlan do
     arrives_at: DateTime.t(),
     ship_type: String.t(),
     extra_fields: map()
-  ]
 end

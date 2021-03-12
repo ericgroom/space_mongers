@@ -2,7 +2,8 @@ defmodule SpaceMongers.SpaceTraders do
   @moduledoc false
 
   alias SpaceMongers.{ApiClient, FullResponse}
-  @delegate SpaceMongers.SpaceTraders.Real # TODO config
+  # TODO config
+  @delegate SpaceMongers.SpaceTraders.Real
 
   @type response() :: {:ok, FullResponse.t()} | {:error, any()}
 
@@ -40,13 +41,16 @@ defmodule SpaceMongers.SpaceTraders do
   def location_info(client, symbol), do: @delegate.location_info(client, symbol)
 
   @callback locations(ApiClient.t(), String.t(), String.t() | nil) :: response()
-  def locations(client, system, location_type), do: @delegate.locations(client, system, location_type)
+  def locations(client, system, location_type),
+    do: @delegate.locations(client, system, location_type)
 
   @callback create_flight_plan(ApiClient.t(), String.t(), String.t()) :: response()
-  def create_flight_plan(client, ship_id, destination), do: @delegate.create_flight_plan(client, ship_id, destination)
+  def create_flight_plan(client, ship_id, destination),
+    do: @delegate.create_flight_plan(client, ship_id, destination)
 
   @callback view_flight_plan(ApiClient.t(), String.t()) :: response()
-  def view_flight_plan(client, flight_plan_id), do: @delegate.view_flight_plan(client, flight_plan_id)
+  def view_flight_plan(client, flight_plan_id),
+    do: @delegate.view_flight_plan(client, flight_plan_id)
 
   @callback flight_plans(ApiClient.t(), String.t()) :: response()
   def flight_plans(client, system), do: @delegate.flight_plans(client, system)
@@ -55,8 +59,10 @@ defmodule SpaceMongers.SpaceTraders do
   def available_trades(client, location), do: @delegate.available_trades(client, location)
 
   @callback buy_goods(ApiClient.t(), String.t(), String.t(), integer()) :: response()
-  def buy_goods(client, ship_id, good, quantity), do: @delegate.buy_goods(client, ship_id, good, quantity)
+  def buy_goods(client, ship_id, good, quantity),
+    do: @delegate.buy_goods(client, ship_id, good, quantity)
 
   @callback sell_goods(ApiClient.t(), String.t(), String.t(), integer()) :: response()
-  def sell_goods(client, ship_id, good, quantity), do: @delegate.sell_goods(client, ship_id, good, quantity)
+  def sell_goods(client, ship_id, good, quantity),
+    do: @delegate.sell_goods(client, ship_id, good, quantity)
 end

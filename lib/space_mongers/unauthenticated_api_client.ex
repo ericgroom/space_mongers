@@ -3,6 +3,6 @@ defmodule SpaceMongers.UnauthenticatedApiClient do
 
   use Tesla
 
-  plug Tesla.Middleware.BaseUrl, "https://api.spacetraders.io"
-  plug Tesla.Middleware.JSON
+  plug(Tesla.Middleware.BaseUrl, "https://api.spacetraders.io")
+  plug(Tesla.Middleware.JSON)
 end

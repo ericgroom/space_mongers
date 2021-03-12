@@ -1,5 +1,5 @@
 defmodule SpaceMongers.Models.User do
-  use SpaceMongers.Model, [
+  use SpaceMongers.Model,
     id: binary(),
     username: String.t(),
     created_at: DateTime.t(),
@@ -8,5 +8,4 @@ defmodule SpaceMongers.Models.User do
     email: String.t(),
     picture: any(),
     extra_fields: map()
-  ]
 end

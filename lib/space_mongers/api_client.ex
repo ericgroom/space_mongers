@@ -1,5 +1,4 @@
 defmodule SpaceMongers.ApiClient do
-
   @moduledoc """
   Authenticated client required by most functions.
 

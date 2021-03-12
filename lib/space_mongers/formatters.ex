@@ -1,8 +1,9 @@
 defmodule SpaceMongers.Formatters do
   @moduledoc false
 
-  def format_response(result, extract_success, opts)  do
+  def format_response(result, extract_success, opts) do
     skip_deserialization = Keyword.get(opts, :skip_deserialization, false)
+
     case result do
       {:ok, response} ->
         if response.status >= 400 do
@@ -10,6 +11,7 @@ defmodule SpaceMongers.Formatters do
         else
           success_response(response, extract_success, skip_deserialization)
         end
+
       {:error, reason} ->
         error_response(reason, skip_deserialization)
     end
@@ -21,7 +23,10 @@ defmodule SpaceMongers.Formatters do
 
   defp error_response(full_response, skip_deserialization)
   defp error_response(response, true), do: {:error, response}
-  defp error_response(%{body: %{"error" => %{"message" => message}}}, false), do: {:error, message}
+
+  defp error_response(%{body: %{"error" => %{"message" => message}}}, false),
+    do: {:error, message}
+
   defp error_response(%{body: body}, false), do: {:error, body}
   defp error_response(reason, _), do: {:error, reason}
 end

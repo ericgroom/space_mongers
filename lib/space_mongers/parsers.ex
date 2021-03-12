@@ -3,6 +3,7 @@ defmodule SpaceMongers.Parsers do
 
   alias SpaceMongers.Models
   def parse_date(nil), do: nil
+
   def parse_date(iso_str) when is_binary(iso_str) do
     case DateTime.from_iso8601(iso_str) do
       {:ok, datetime, _offset} -> datetime
@@ -11,11 +12,13 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_list(nil, _item_parser), do: nil
+
   def parse_list(list, item_parser) when is_list(list) do
     Enum.map(list, item_parser)
   end
 
   def parse_user(nil), do: nil
+
   def parse_user(user) when is_map(user) do
     %Models.User{
       id: user["id"],
@@ -30,6 +33,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_owned_ship(nil), do: nil
+
   def parse_owned_ship(ship) when is_map(ship) do
     %Models.OwnedShip{
       id: ship["id"],
@@ -50,6 +54,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   defp parse_contained_good(nil), do: nil
+
   defp parse_contained_good(good) when is_map(good) do
     %Models.OwnedShip.ContainedGood{
       good: good["good"],
@@ -60,6 +65,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_owned_loan(nil), do: nil
+
   def parse_owned_loan(loan) when is_map(loan) do
     %Models.OwnedLoan{
       id: loan["id"],
@@ -72,6 +78,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_available_loan(nil), do: nil
+
   def parse_available_loan(loan) when is_map(loan) do
     %Models.AvailableLoan{
       amount: loan["amount"],
@@ -84,6 +91,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_user_data(nil), do: nil
+
   def parse_user_data(user_data) when is_map(user_data) do
     %Models.UserData{
       username: user_data["username"],
@@ -95,6 +103,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_available_ship(nil), do: nil
+
   def parse_available_ship(ship) when is_map(ship) do
     %Models.AvailableShip{
       class: ship["class"],
@@ -110,6 +119,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   defp parse_purchase_location(nil), do: nil
+
   defp parse_purchase_location(location) when is_map(location) do
     %{
       location: location["location"],
@@ -118,6 +128,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_location(nil), do: nil
+
   def parse_location(location) when is_map(location) do
     %Models.Location{
       name: location["name"],
@@ -130,6 +141,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_system(nil), do: nil
+
   def parse_system(system) when is_map(system) do
     %Models.System{
       name: system["name"],
@@ -140,6 +152,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_flight_plan(nil), do: nil
+
   def parse_flight_plan(flight_plan) when is_map(flight_plan) do
     %Models.FlightPlan{
       id: flight_plan["id"],
@@ -157,6 +170,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_public_flight_plan(nil), do: nil
+
   def parse_public_flight_plan(flight_plan) when is_map(flight_plan) do
     %Models.PublicFlightPlan{
       id: flight_plan["id"],
@@ -167,10 +181,11 @@ defmodule SpaceMongers.Parsers do
       arrives_at: flight_plan["arrivesAt"] |> parse_date(),
       ship_type: flight_plan["shipType"]
     }
-    |>  with_extra_fields(flight_plan)
+    |> with_extra_fields(flight_plan)
   end
 
   def parse_order(nil), do: nil
+
   def parse_order(order) when is_map(order) do
     %Models.Order{
       credits: order["credits"],
@@ -181,6 +196,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   defp parse_order_item(nil), do: nil
+
   defp parse_order_item(order_item) when is_map(order_item) do
     %Models.Order.OrderItem{
       good: order_item["good"],
@@ -192,6 +208,7 @@ defmodule SpaceMongers.Parsers do
   end
 
   def parse_marketplace_item(nil), do: nil
+
   def parse_marketplace_item(marketplace_item) when is_map(marketplace_item) do
     %Models.MarketplaceItem{
       symbol: marketplace_item["symbol"],
@@ -205,6 +222,6 @@ defmodule SpaceMongers.Parsers do
   def with_extra_fields(model, map) do
     known_keys = model.__struct__.camelcase_keys()
     {_, extra} = Map.split(map, known_keys)
-    %{model | extra_fields: extra }
+    %{model | extra_fields: extra}
   end
 end
