@@ -69,6 +69,12 @@ defmodule SpaceMongers.SpaceTraders.Real do
     end
   end
 
+  def scrap_ship(client, ship_id) do
+    exec do
+      Tesla.delete(client, "/users/:username/ships/" <> ship_id)
+    end
+  end
+
   def systems(client) do
     exec do
       Tesla.get(client, "/game/systems")

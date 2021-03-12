@@ -175,6 +175,22 @@ defmodule SpaceMongers do
   end
 
   @doc """
+  Scraps a ship for credits
+
+  DELETE /users/:username/ships/:shipId
+  """
+  @spec scrap_ship(client(), String.t(), options()) :: response(String.t())
+  def scrap_ship(client, ship_id, opts \\ []) do
+    SpaceTraders.scrap_ship(client, ship_id)
+    |> format_response(
+      fn response ->
+        response.body["success"]
+      end,
+      opts
+    )
+  end
+
+  @doc """
   Shows all known systems.
 
   GET /game/systems
