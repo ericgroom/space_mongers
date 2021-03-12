@@ -4,7 +4,7 @@ defmodule SpaceMongers.Models.Order do
   """
   use SpaceMongers.Model,
     credits: integer(),
-    order: [Models.OrderItem.t()],
+    order: [Models.Order.OrderItem.t()],
     ship: Models.OwnedShip.t(),
     extra_fields: map()
 end
