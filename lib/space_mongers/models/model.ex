@@ -14,7 +14,7 @@ defmodule SpaceMongers.Model do
       @detected_camelcase_keys SpaceMongers.Model.camelcase_keys(unquote(fields))
 
       @doc false
-      def camelcase_keys() do
+      def camelcase_keys do
         @detected_camelcase_keys
       end
     end

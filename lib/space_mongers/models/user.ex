@@ -1,4 +1,7 @@
 defmodule SpaceMongers.Models.User do
+  @moduledoc """
+  Represents the user.
+  """
   use SpaceMongers.Model,
     id: binary(),
     username: String.t(),

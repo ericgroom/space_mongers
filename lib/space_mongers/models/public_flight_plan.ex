@@ -1,4 +1,7 @@
 defmodule SpaceMongers.Models.PublicFlightPlan do
+  @moduledoc """
+  Represents a flight plan visible to all users.
+  """
   use SpaceMongers.Model,
     id: String.t(),
     username: String.t(),

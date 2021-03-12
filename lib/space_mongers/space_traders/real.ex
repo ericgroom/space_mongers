@@ -15,7 +15,7 @@ defmodule SpaceMongers.SpaceTraders.Real do
     end
   end
 
-  def status() do
+  def status do
     exec do
       UnauthenticatedApiClient.get("/game/status")
     end

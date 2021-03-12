@@ -8,7 +8,7 @@ defmodule SpaceMongers do
   All function calls here are automatically rate-limited to avoid overloading the servers and getting your user
   banned. Right now the rate limiting is quite agressive so expect SpaceMongers to become more efficient in the future.
   """
-  alias SpaceMongers.{ApiClient, FullResponse, SpaceTraders, Models, Parsers}
+  alias SpaceMongers.{ApiClient, FullResponse, Models, Parsers, SpaceTraders}
   import SpaceMongers.Formatters, only: [format_response: 3]
 
   @type client() :: ApiClient.t()
