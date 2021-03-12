@@ -28,12 +28,14 @@ jobs:
         elixir-version: ${{ matrix.elixir }}
         otp-version: ${{ matrix.otp }}
     - name: Restore dependencies cache
+      id: mix-cache
       uses: actions/cache@v2
       with:
         path: deps
         key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp}}-mix-${{ hashFiles('**/mix.lock') }}
         restore-keys: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp}}-mix- 
     - name: Install dependencies
+      if: steps.mix-cache.outputs.cache-hit != 'true'
       run: mix deps.get
     - name: Run tests
       run: mix test
