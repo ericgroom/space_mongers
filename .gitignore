@@ -27,3 +27,5 @@ space_mongers-*.tar
 /tmp
 
 .private.iex.exs
+
+/priv/plts

@@ -12,7 +12,8 @@ defmodule SpaceMongers.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
-      docs: docs()
+      docs: docs(),
+      dialyzer: dialyzer()
     ]
   end
 
@@ -31,7 +32,8 @@ defmodule SpaceMongers.MixProject do
       {:hackney, "~> 1.17.0"},
       {:jason, ">= 1.0.0"},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false},
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -67,6 +69,13 @@ defmodule SpaceMongers.MixProject do
       Models: [
         ~r/SpaceMongers\.Models\.*+/
       ]
+    ]
+  end
+
+  defp dialyzer do
+    [
+      plt_core_path: "priv/plts",
+      plt_path: {:no_warn, "priv/plts/dialyzer.plt"}
     ]
   end
 end
