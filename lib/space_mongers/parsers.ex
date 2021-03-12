@@ -203,20 +203,8 @@ defmodule SpaceMongers.Parsers do
   end
 
   def with_extra_fields(model, map) do
-    known_keys = camelcase_keys_from_struct(model.__struct__)
+    known_keys = model.__struct__.camelcase_keys()
     {_, extra} = Map.split(map, known_keys)
     %{model | extra_fields: extra }
-  end
-
-  def camelcase_keys_from_struct(struct_module) do
-    struct_module.__struct__()
-      |> Map.keys()
-      |> Stream.reject(fn key -> key in [:__struct__, :extra_fields] end)
-      |> Stream.map(&Atom.to_string/1)
-      |> Enum.map(fn str ->
-        [first | rest] = str |> String.split("_")
-        [first | Enum.map(rest, &String.capitalize/1)]
-          |> Enum.join()
-      end)
   end
 end
