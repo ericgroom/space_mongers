@@ -25,7 +25,7 @@ defmodule SpaceMongers do
   @spec status(options()) :: response(String.t())
   def status(opts \\ []) do
     SpaceTraders.status()
-      |> format_response(fn env -> env.body["status"] end, opts)
+    |> format_response(fn env -> env.body["status"] end, opts)
   end
 
   @doc """
@@ -35,17 +35,22 @@ defmodule SpaceMongers do
 
   POST /users/:username/token
   """
-  @spec claim_username(String.t(), options()) :: response(%{token: String.t(), user: Models.User.t()})
+  @spec claim_username(String.t(), options()) ::
+          response(%{token: String.t(), user: Models.User.t()})
   def claim_username(username, opts \\ []) do
     SpaceTraders.claim_username(username)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         token = response.body["token"]
         user = response.body["user"] |> Parsers.parse_user()
+
         %{
           token: token,
           user: user
         }
-      end, opts)
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -56,10 +61,13 @@ defmodule SpaceMongers do
   @spec current_user(client(), options()) :: response(Models.UserData.t())
   def current_user(client, opts \\ []) do
     SpaceTraders.current_user(client)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["user"]
-          |> Parsers.parse_user_data()
-      end, opts)
+        |> Parsers.parse_user_data()
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -70,10 +78,13 @@ defmodule SpaceMongers do
   @spec my_ships(client(), options()) :: response([Models.OwnedShip.t()])
   def my_ships(client, opts \\ []) do
     SpaceTraders.my_ships(client)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["ships"]
-          |> Parsers.parse_list(&Parsers.parse_owned_ship/1)
-      end, opts)
+        |> Parsers.parse_list(&Parsers.parse_owned_ship/1)
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -84,10 +95,13 @@ defmodule SpaceMongers do
   @spec loans(client(), options()) :: response([Models.AvailableLoan.t()])
   def loans(client, opts \\ []) do
     SpaceTraders.loans(client)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["loans"]
-          |> Parsers.parse_list(&Parsers.parse_available_loan/1)
-      end, opts)
+        |> Parsers.parse_list(&Parsers.parse_available_loan/1)
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -98,10 +112,13 @@ defmodule SpaceMongers do
   @spec my_loans(client(), options()) :: response([Models.OwnedLoan.t()])
   def my_loans(client, opts \\ []) do
     SpaceTraders.my_loans(client)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["loans"]
         |> Parsers.parse_list(&Parsers.parse_owned_loan/1)
-      end, opts)
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -112,10 +129,13 @@ defmodule SpaceMongers do
   @spec buy_loan(client(), String.t(), options()) :: response(Models.UserData.t())
   def buy_loan(client, type, opts \\ []) do
     SpaceTraders.buy_loan(client, type)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["user"]
-          |> Parsers.parse_user_data()
-      end, opts)
+        |> Parsers.parse_user_data()
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -126,10 +146,13 @@ defmodule SpaceMongers do
   @spec ships(client(), String.t() | nil, options()) :: response([Models.AvailableShip.t()])
   def ships(client, class \\ nil, opts \\ []) do
     SpaceTraders.ships(client, class)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["ships"]
-          |> Parsers.parse_list(&Parsers.parse_available_ship/1)
-      end, opts)
+        |> Parsers.parse_list(&Parsers.parse_available_ship/1)
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -142,10 +165,13 @@ defmodule SpaceMongers do
   @spec buy_ship(client(), String.t(), String.t(), options()) :: response(Models.UserData.t())
   def buy_ship(client, location, type, opts \\ []) do
     SpaceTraders.buy_ship(client, location, type)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["user"]
-          |> Parsers.parse_user_data()
-      end, opts)
+        |> Parsers.parse_user_data()
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -156,10 +182,13 @@ defmodule SpaceMongers do
   @spec systems(client(), options()) :: response([Models.System.t()])
   def systems(client, opts \\ []) do
     SpaceTraders.systems(client)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["systems"]
-          |> Parsers.parse_list(&Parsers.parse_system/1)
-      end, opts)
+        |> Parsers.parse_list(&Parsers.parse_system/1)
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -170,10 +199,13 @@ defmodule SpaceMongers do
   @spec location_info(client(), String.t(), options()) :: response(Models.Location.t())
   def location_info(client, symbol, opts \\ []) do
     SpaceTraders.location_info(client, symbol)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["planet"]
-          |> Parsers.parse_location()
-      end, opts)
+        |> Parsers.parse_location()
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -182,13 +214,17 @@ defmodule SpaceMongers do
 
   GET /game/systems/:system/locations
   """
-  @spec locations(client(), String.t() | nil, String.t(), options()) :: response([Models.Location.t()])
+  @spec locations(client(), String.t() | nil, String.t(), options()) ::
+          response([Models.Location.t()])
   def locations(client, location_type \\ nil, system \\ @default_system, opts \\ []) do
     SpaceTraders.locations(client, system, location_type)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["locations"]
-          |> Parsers.parse_list(&Parsers.parse_location/1)
-      end, opts)
+        |> Parsers.parse_list(&Parsers.parse_location/1)
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -196,13 +232,17 @@ defmodule SpaceMongers do
 
   POST /users/:username/flight-plans
   """
-  @spec create_flight_plan(client(), String.t(), String.t(), options()) :: response(Models.FlightPlan.t())
+  @spec create_flight_plan(client(), String.t(), String.t(), options()) ::
+          response(Models.FlightPlan.t())
   def create_flight_plan(client, ship_id, destination, opts \\ []) do
     SpaceTraders.create_flight_plan(client, ship_id, destination)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["flightPlan"]
-          |> Parsers.parse_flight_plan()
-      end, opts)
+        |> Parsers.parse_flight_plan()
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -213,10 +253,13 @@ defmodule SpaceMongers do
   @spec view_flight_plan(client(), String.t(), options()) :: response(Models.FlightPlan.t())
   def view_flight_plan(client, flight_plan_id, opts \\ []) do
     SpaceTraders.view_flight_plan(client, flight_plan_id)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["flightPlan"]
-          |> Parsers.parse_flight_plan()
-      end, opts)
+        |> Parsers.parse_flight_plan()
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -224,13 +267,17 @@ defmodule SpaceMongers do
 
   GET /game/systems/:system/flight-plans
   """
-  @spec flight_plans(client(), String.t() | nil, options()) :: response([Models.PublicFlightPlan.t()])
+  @spec flight_plans(client(), String.t() | nil, options()) ::
+          response([Models.PublicFlightPlan.t()])
   def flight_plans(client, system \\ @default_system, opts \\ []) do
     SpaceTraders.flight_plans(client, system)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body["flightPlans"]
-          |> Parsers.parse_list(&Parsers.parse_public_flight_plan/1)
-      end, opts)
+        |> Parsers.parse_list(&Parsers.parse_public_flight_plan/1)
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -238,13 +285,17 @@ defmodule SpaceMongers do
 
   GET /game/locations/:location/marketplace
   """
-  @spec available_trades(client(), String.t(), options()) :: response([Models.MarketplaceItem.t()])
+  @spec available_trades(client(), String.t(), options()) ::
+          response([Models.MarketplaceItem.t()])
   def available_trades(client, location, opts \\ []) do
     SpaceTraders.available_trades(client, location)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         get_in(response.body, ["planet", "marketplace"])
         |> Parsers.parse_list(&Parsers.parse_marketplace_item/1)
-      end, opts)
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -252,13 +303,17 @@ defmodule SpaceMongers do
 
   POST /users/:username/purchase-orders
   """
-  @spec buy_goods(client(), String.t(), String.t(), number(), options()) :: response(Models.Order.t())
+  @spec buy_goods(client(), String.t(), String.t(), number(), options()) ::
+          response(Models.Order.t())
   def buy_goods(client, ship_id, good, quantity, opts \\ []) do
     SpaceTraders.buy_goods(client, ship_id, good, quantity)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body
-          |> Parsers.parse_order()
-      end, opts)
+        |> Parsers.parse_order()
+      end,
+      opts
+    )
   end
 
   @doc """
@@ -266,12 +321,16 @@ defmodule SpaceMongers do
 
   POST /users/:username/sell-orders
   """
-  @spec sell_goods(client(), String.t(), String.t(), number(), options()) :: response(Models.Order.t())
+  @spec sell_goods(client(), String.t(), String.t(), number(), options()) ::
+          response(Models.Order.t())
   def sell_goods(client, ship_id, good, quantity, opts \\ []) do
     SpaceTraders.sell_goods(client, ship_id, good, quantity)
-      |> format_response(fn response ->
+    |> format_response(
+      fn response ->
         response.body
-          |> Parsers.parse_order()
-      end, opts)
+        |> Parsers.parse_order()
+      end,
+      opts
+    )
   end
 end

@@ -5,6 +5,7 @@ defmodule SpaceMongers.Model do
 
   defmacro __using__([{_, _} | _] = fieldspecs) do
     fields = Keyword.keys(fieldspecs)
+
     quote do
       alias SpaceMongers.Models
       defstruct unquote(fields)
@@ -21,12 +22,13 @@ defmodule SpaceMongers.Model do
 
   def camelcase_keys(fields) do
     fields
-      |> Stream.reject(fn key -> key in [:__struct__, :extra_fields] end)
-      |> Stream.map(&Atom.to_string/1)
-      |> Enum.map(fn str ->
-        [first | rest] = str |> String.split("_")
-        [first | Enum.map(rest, &String.capitalize/1)]
-          |> Enum.join()
-      end)
+    |> Stream.reject(fn key -> key in [:__struct__, :extra_fields] end)
+    |> Stream.map(&Atom.to_string/1)
+    |> Enum.map(fn str ->
+      [first | rest] = str |> String.split("_")
+
+      [first | Enum.map(rest, &String.capitalize/1)]
+      |> Enum.join()
+    end)
   end
 end

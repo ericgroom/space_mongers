@@ -8,12 +8,13 @@ defmodule SpaceMongers.SpaceTraders.Real do
 
   @default_cost 5
 
-  defmacrop exec([do: block]) do
+  defmacrop exec(do: block) do
     quote do
       Executor.add_job(fn -> unquote(block) end, unquote(@default_cost))
-        |> convert_response()
+      |> convert_response()
     end
   end
+
   def status() do
     exec do
       UnauthenticatedApiClient.get("/game/status")
@@ -82,13 +83,16 @@ defmodule SpaceMongers.SpaceTraders.Real do
 
   def locations(client, system, location_type) do
     exec do
-      Tesla.get(client, "/game/systems/" <> system <> "/locations", [query: [type: location_type]])
+      Tesla.get(client, "/game/systems/" <> system <> "/locations", query: [type: location_type])
     end
   end
 
   def create_flight_plan(client, ship_id, destination) do
     exec do
-      Tesla.post(client, "/users/:username/flight-plans", %{shipId: ship_id, destination: destination})
+      Tesla.post(client, "/users/:username/flight-plans", %{
+        shipId: ship_id,
+        destination: destination
+      })
     end
   end
 

@@ -11,10 +11,12 @@ defmodule SpaceMongers.PutUsernameMiddleware do
   end
 
   defp put_username(env, username) do
-    {_, new_opts} = Keyword.get_and_update(env.opts, :path_params, fn current_value ->
-      new_value = Keyword.put(current_value || Keyword.new(), :username, username)
-      {current_value, new_value}
-    end)
+    {_, new_opts} =
+      Keyword.get_and_update(env.opts, :path_params, fn current_value ->
+        new_value = Keyword.put(current_value || Keyword.new(), :username, username)
+        {current_value, new_value}
+      end)
+
     %{env | opts: new_opts}
   end
 end

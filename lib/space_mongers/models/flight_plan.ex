@@ -1,5 +1,5 @@
 defmodule SpaceMongers.Models.FlightPlan do
-  use SpaceMongers.Model, [
+  use SpaceMongers.Model,
     id: String.t(),
     ship: String.t(),
     destination: String.t(),
@@ -11,5 +11,4 @@ defmodule SpaceMongers.Models.FlightPlan do
     time_remaining_in_seconds: integer(),
     terminated_at: DateTime.t(),
     extra_fields: map()
-  ]
 end

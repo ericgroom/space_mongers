@@ -14,7 +14,8 @@ defmodule SpaceMongers.PointTimeRateLimiter do
     GenServer.start_link(__MODULE__, state, name: __MODULE__)
   end
 
-  def add_job(execute, cost_in_points) when is_function(execute, 0) and is_integer(cost_in_points) do
+  def add_job(execute, cost_in_points)
+      when is_function(execute, 0) and is_integer(cost_in_points) do
     GenServer.call(__MODULE__, {:enqueue, {execute, cost_in_points}})
   end
 
@@ -24,42 +25,54 @@ defmodule SpaceMongers.PointTimeRateLimiter do
     if cost_in_points > points_per_interval do
       {:reply, {:error, "Job is greater than the maximum number of points available"}, state}
     else
-      Logger.debug("enqueueing job from #{inspect from}")
-      Process.send_after(self(), :run_job, 10) # small delay for state update to occur
+      Logger.debug("enqueueing job from #{inspect(from)}")
+      # small delay for state update to occur
+      Process.send_after(self(), :run_job, 10)
       {:noreply, %{state | jobs: jobs ++ [{from, execute, cost_in_points}]}}
     end
   end
 
-  def handle_info(:run_job, %{jobs: [next_job | remaining_jobs], past_jobs: past_jobs, opts: opts} = state) do
+  def handle_info(
+        :run_job,
+        %{jobs: [next_job | remaining_jobs], past_jobs: past_jobs, opts: opts} = state
+      ) do
     Logger.debug("run job pass")
     time_interval = opts[:time_interval] || 1000.0
     points_per_interval = opts[:points_per_interval] || 10.0
 
     unexpired_past_jobs = without_expired(past_jobs, time_interval)
-    used_points = unexpired_past_jobs
+
+    used_points =
+      unexpired_past_jobs
       |> Enum.map(fn {_, points} -> points end)
       |> Enum.sum()
 
     {from, exec_job, cost_in_points} = next_job
-    Logger.debug("points in use: #{used_points}, trying to run for #{inspect from} with cost of #{cost_in_points}")
+
+    Logger.debug(
+      "points in use: #{used_points}, trying to run for #{inspect(from)} with cost of #{
+        cost_in_points
+      }"
+    )
 
     if cost_in_points + used_points <= points_per_interval do
       Task.Supervisor.async_nolink(SpaceMongers.PointTimeRateLimiterTaskSupervisor, fn ->
         try do
           result = exec_job.()
           GenServer.reply(from, result)
-          Logger.debug("result sent to #{inspect from}")
+          Logger.debug("result sent to #{inspect(from)}")
         rescue
           e in RuntimeError ->
             GenServer.reply(from, {:error, e})
-            Logger.debug("error sent to #{inspect from}")
+            Logger.debug("error sent to #{inspect(from)}")
         end
       end)
+
       with_completed = [{System.monotonic_time(), cost_in_points} | unexpired_past_jobs]
       schedule_success(remaining_jobs)
-      {:noreply, %{state | jobs: remaining_jobs, past_jobs: with_completed }}
+      {:noreply, %{state | jobs: remaining_jobs, past_jobs: with_completed}}
     else
-      Logger.debug("couldn't schedule #{inspect from}")
+      Logger.debug("couldn't schedule #{inspect(from)}")
       schedule_failure(unexpired_past_jobs, time_interval)
       {:noreply, %{state | past_jobs: unexpired_past_jobs}}
     end
@@ -72,6 +85,7 @@ defmodule SpaceMongers.PointTimeRateLimiter do
 
   defp without_expired(past_jobs, time_interval) do
     now = System.monotonic_time()
+
     Enum.reject(past_jobs, fn {executed_at, _} ->
       diff_native = now - executed_at
       diff_milli = System.convert_time_unit(diff_native, :native, :millisecond)
@@ -82,9 +96,10 @@ defmodule SpaceMongers.PointTimeRateLimiter do
   defp schedule_success([]), do: :ok
   defp schedule_success([_ | _]), do: Process.send(self(), :run_job, [])
 
-  defp schedule_failure([_|_] = past_jobs, time_interval) do
+  defp schedule_failure([_ | _] = past_jobs, time_interval) do
     # try to run job again after an element in past_jobs expires
-    next_expiration = past_jobs
+    next_expiration =
+      past_jobs
       |> Enum.map(fn {executed_at, _} -> executed_at end)
       |> Enum.min()
 
