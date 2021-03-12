@@ -1,7 +1,5 @@
 defmodule SpaceMongers.Models.OwnedShip do
-  defstruct [:id, :location, :x, :y, :cargo, :max_cargo, :space_available, :class, :type, :manufacturer, :speed, :weapons, :plating]
-
-  @type t() :: %__MODULE__{
+  use SpaceMongers.Model, [
     id: binary(),
     location: String.t(),
     x: integer(),
@@ -14,16 +12,16 @@ defmodule SpaceMongers.Models.OwnedShip do
     manufacturer: String.t(),
     speed: integer(),
     weapons: integer(),
-    plating: integer()
-  }
+    plating: integer(),
+    extra_fields: map()
+  ]
 end
 
 defmodule SpaceMongers.Models.OwnedShip.ContainedGood do
-  defstruct [:good, :quantity, :total_volume]
-
-  @type t() :: %__MODULE__{
+  use SpaceMongers.Model, [
     good: String.t(),
     quantity: integer(),
-    total_volume: integer()
-  }
+    total_volume: integer(),
+    extra_fields: map()
+  ]
 end

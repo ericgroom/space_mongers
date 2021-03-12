@@ -1,7 +1,5 @@
 defmodule SpaceMongers.Models.AvailableShip do
-  defstruct [:class, :type, :manufacturer, :max_cargo, :speed, :weapons, :plating, :purchase_locations]
-
-  @type t() :: %__MODULE__{
+  use SpaceMongers.Model, [
     class: String.t(),
     type: String.t(),
     manufacturer: String.t(),
@@ -9,6 +7,7 @@ defmodule SpaceMongers.Models.AvailableShip do
     speed: integer(),
     weapons: integer(),
     plating: integer(),
-    purchase_locations: [%{location: String.t(), price: integer()}]
-  }
+    purchase_locations: [%{location: String.t(), price: integer()}],
+    extra_fields: map()
+  ]
 end

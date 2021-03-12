@@ -1,7 +1,5 @@
 defmodule SpaceMongers.Models.User do
-  defstruct [:id, :username, :created_at, :updated_at, :credits, :email, :picture]
-
-  @type t() :: %__MODULE__{
+  use SpaceMongers.Model, [
     id: binary(),
     username: String.t(),
     created_at: DateTime.t(),
@@ -9,5 +7,6 @@ defmodule SpaceMongers.Models.User do
     credits: integer(),
     email: String.t(),
     picture: any(),
-  }
+    extra_fields: map()
+  ]
 end
