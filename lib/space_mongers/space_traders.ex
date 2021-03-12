@@ -36,6 +36,9 @@ defmodule SpaceMongers.SpaceTraders do
   @callback buy_ship(ApiClient.t(), String.t(), String.t()) :: response()
   def buy_ship(client, location, type), do: adapter().buy_ship(client, location, type)
 
+  @callback scrap_ship(ApiClient.t(), String.t()) :: response()
+  def scrap_ship(client, ship_id), do: adapter().scrap_ship(client, ship_id)
+
   @callback systems(ApiClient.t()) :: response()
   def systems(client), do: adapter().systems(client)
 
