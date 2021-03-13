@@ -2,6 +2,8 @@ defmodule SpaceMongers.Model do
   @moduledoc false
 
   @callback camelcase_keys() :: [String.t()]
+  @callback ignore_keys() :: [String.t()]
+  @optional_callbacks ignore_keys: 0
 
   defmacro __using__([{_, _} | _] = fieldspecs) do
     fields = Keyword.keys(fieldspecs)
@@ -13,10 +15,17 @@ defmodule SpaceMongers.Model do
       @behaviour SpaceMongers.Model
       @detected_camelcase_keys SpaceMongers.Model.camelcase_keys(unquote(fields))
 
+      @impl true
       @doc false
       def camelcase_keys do
         @detected_camelcase_keys
       end
+
+      @impl true
+      @doc false
+      def ignore_keys, do: []
+
+      defoverridable camelcase_keys: 0, ignore_keys: 0
     end
   end
 

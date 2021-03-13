@@ -9,4 +9,7 @@ defmodule SpaceMongers.Models.Location do
     x: integer(),
     y: integer(),
     extra_fields: map()
+
+  @impl true
+  def ignore_keys, do: ["ships"]
 end
