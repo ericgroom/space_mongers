@@ -37,6 +37,14 @@ jobs:
     - name: Install dependencies
       if: steps.mix-cache.outputs.cache-hit != 'true'
       run: mix deps.get
+    - name: Build cache
+      uses: actions/cache@v2
+      with:
+        path: _build
+        key: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp}}-build-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp}}-build- 
+    - name: Compile
+      run: mix compile
     - name: Ensure Code is Formatted
       run: mix format --check-formatted
     - name: Credo
