@@ -62,6 +62,6 @@ jobs:
         mkdir -p priv/plts
         mix dialyzer --plt
     - name: Run Dialyzer
-      run: mix dialyzer --no-check
+      run: mix dialyzer
     - name: Run tests
       run: mix test
