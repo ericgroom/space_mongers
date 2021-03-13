@@ -184,6 +184,16 @@ defmodule SpaceMongers.Parsers do
     |> with_extra_fields(flight_plan)
   end
 
+  def parse_docked_ship(nil), do: nil
+
+  def parse_docked_ship(ship) when is_map(ship) do
+    %Models.DockedShip{
+      ship_id: ship["shipId"],
+      ship_type: ship["shipType"],
+      username: ship["username"]
+    }
+  end
+
   def parse_order(nil), do: nil
 
   def parse_order(order) when is_map(order) do

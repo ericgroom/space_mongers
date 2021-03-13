@@ -244,6 +244,23 @@ defmodule SpaceMongers do
   end
 
   @doc """
+  Get list of all docked ships at a particular location
+
+  GET /game/locations/:symbol/ships
+  """
+  @spec docked_ships(client(), String.t(), options()) :: response([Models.DockedShip.t()])
+  def docked_ships(client, location, opts \\ []) do
+    SpaceTraders.docked_ships(client, location)
+    |> format_response(
+      fn response ->
+        get_in(response.body, ["planet", "ships"])
+        |> Parsers.parse_list(&Parsers.parse_docked_ship/1)
+      end,
+      opts
+    )
+  end
+
+  @doc """
   Start a flight plan for a particular ship. Takes a ship_id and a destination
 
   POST /users/:username/flight-plans
