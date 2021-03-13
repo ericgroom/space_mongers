@@ -220,8 +220,10 @@ defmodule SpaceMongers.Parsers do
   end
 
   def with_extra_fields(model, map) do
-    known_keys = model.__struct__.camelcase_keys()
+    model_module = model.__struct__
+    known_keys = model_module.camelcase_keys()
     {_, extra} = Map.split(map, known_keys)
-    %{model | extra_fields: extra}
+    {_, without_ignored} = Map.split(extra, model_module.ignore_keys())
+    %{model | extra_fields: without_ignored}
   end
 end
