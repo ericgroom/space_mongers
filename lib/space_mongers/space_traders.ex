@@ -49,6 +49,9 @@ defmodule SpaceMongers.SpaceTraders do
   def locations(client, system, location_type),
     do: adapter().locations(client, system, location_type)
 
+  @callback docked_ships(ApiClient.t(), String.t()) :: response()
+  def docked_ships(client, symbol), do: adapter().docked_ships(client, symbol)
+
   @callback create_flight_plan(ApiClient.t(), String.t(), String.t()) :: response()
   def create_flight_plan(client, ship_id, destination),
     do: adapter().create_flight_plan(client, ship_id, destination)

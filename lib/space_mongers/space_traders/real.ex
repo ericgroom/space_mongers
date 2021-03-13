@@ -93,6 +93,12 @@ defmodule SpaceMongers.SpaceTraders.Real do
     end
   end
 
+  def docked_ships(client, symbol) do
+    exec do
+      Tesla.get(client, "/game/locations/" <> symbol <> "/ships")
+    end
+  end
+
   def create_flight_plan(client, ship_id, destination) do
     exec do
       Tesla.post(client, "/users/:username/flight-plans", %{
