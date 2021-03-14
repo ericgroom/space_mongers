@@ -8,8 +8,7 @@ defmodule SpaceMongers.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      SpaceMongers.PointTimeRateLimiter,
-      {Task.Supervisor, name: SpaceMongers.PointTimeRateLimiterTaskSupervisor}
+      SpaceMongers.PointTimeRateLimiter
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
