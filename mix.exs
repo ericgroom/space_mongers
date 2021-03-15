@@ -45,12 +45,7 @@ defmodule SpaceMongers.MixProject do
         "lib",
         "mix.exs",
         "README*",
-        "readme*",
-        "LICENSE*",
-        "license*",
-        "CHANGELOG*",
-        "changelog*",
-        "src"
+        "LICENSE*"
       ]
     ]
   end
