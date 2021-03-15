@@ -40,7 +40,18 @@ defmodule SpaceMongers.MixProject do
   defp package do
     [
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/ericgroom/space_mongers"}
+      links: %{"GitHub" => "https://github.com/ericgroom/space_mongers"},
+      files: [
+        "lib",
+        "mix.exs",
+        "README*",
+        "readme*",
+        "LICENSE*",
+        "license*",
+        "CHANGELOG*",
+        "changelog*",
+        "src"
+      ]
     ]
   end
 
