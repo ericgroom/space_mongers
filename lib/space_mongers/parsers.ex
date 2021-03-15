@@ -217,6 +217,7 @@ defmodule SpaceMongers.Parsers do
     |> with_extra_fields(order_item)
   end
 
+  # credo:disable-for-next-line
   # TODO: remove this clause once they fix the API
   defp parse_order_item([order_item]) do
     parse_order_item(order_item)
