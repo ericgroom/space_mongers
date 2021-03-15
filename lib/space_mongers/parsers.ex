@@ -199,7 +199,7 @@ defmodule SpaceMongers.Parsers do
   def parse_order(order) when is_map(order) do
     %Models.Order{
       credits: order["credits"],
-      order: order["order"] |> parse_list(&parse_order_item/1),
+      order: order["order"] |> parse_order_item(),
       ship: order["ship"] |> parse_owned_ship()
     }
     |> with_extra_fields(order)
@@ -215,6 +215,11 @@ defmodule SpaceMongers.Parsers do
       total: order_item["total"]
     }
     |> with_extra_fields(order_item)
+  end
+
+  # TODO: remove this clause once they fix the API
+  defp parse_order_item([order_item]) do
+    parse_order_item(order_item)
   end
 
   def parse_marketplace_item(nil), do: nil
