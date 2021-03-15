@@ -217,7 +217,7 @@ defmodule SpaceMongers do
     SpaceTraders.location_info(client, symbol)
     |> format_response(
       fn response ->
-        response.body["planet"]
+        response.body["location"]
         |> Parsers.parse_location()
       end,
       opts
@@ -253,7 +253,7 @@ defmodule SpaceMongers do
     SpaceTraders.docked_ships(client, location)
     |> format_response(
       fn response ->
-        get_in(response.body, ["planet", "ships"])
+        get_in(response.body, ["location", "ships"])
         |> Parsers.parse_list(&Parsers.parse_docked_ship/1)
       end,
       opts
@@ -324,7 +324,7 @@ defmodule SpaceMongers do
     SpaceTraders.available_trades(client, location)
     |> format_response(
       fn response ->
-        get_in(response.body, ["planet", "marketplace"])
+        get_in(response.body, ["location", "marketplace"])
         |> Parsers.parse_list(&Parsers.parse_marketplace_item/1)
       end,
       opts
