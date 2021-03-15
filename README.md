@@ -14,7 +14,7 @@ SpaceMongers can be installed by adding `space_mongers` to your list of dependen
 ```elixir
 def deps do
   [
-    {:space_mongers, "~> 0.2.0"}
+    {:space_mongers, "~> 0.3.0"}
   ]
 end
 ```
